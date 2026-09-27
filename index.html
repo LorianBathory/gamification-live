@@ -1944,10 +1944,24 @@
     );
     const liveMode = liveEnabled ? (query.get('presenter') === '1' ? 'presenter' : 'audience') : 'solo';
     const participantStorageKey = `gamification-participant:${roomId}`;
-    let participantId = localStorage.getItem(participantStorageKey);
+    const readStorage = (storage, key) => {
+      try { return storage?.getItem(key) || ''; } catch { return ''; }
+    };
+    const writeStorage = (storage, key, value) => {
+      try { storage?.setItem(key, value); } catch { /* Storage may be unavailable in an embedded browser. */ }
+    };
+    const createParticipantId = () => {
+      if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, character => {
+        const random = Math.floor(Math.random() * 16);
+        const value = character === 'x' ? random : (random & 0x3) | 0x8;
+        return value.toString(16);
+      });
+    };
+    let participantId = readStorage(window.localStorage, participantStorageKey);
     if (!participantId) {
-      participantId = crypto.randomUUID();
-      localStorage.setItem(participantStorageKey, participantId);
+      participantId = createParticipantId();
+      writeStorage(window.localStorage, participantStorageKey, participantId);
     }
     const galleryControllers = new Map();
     let realtimeClient = null;
@@ -2281,11 +2295,11 @@
 
       try {
         if (liveMode === 'presenter') {
-          presenterToken = sessionStorage.getItem(`presenter-token:${roomId}`) || '';
+          presenterToken = readStorage(window.sessionStorage, `presenter-token:${roomId}`);
           if (!presenterToken) presenterToken = window.prompt('Presenter code') || '';
           if (!presenterToken) throw new Error('Presenter code is required');
           await apiRequest('verify-presenter', { presenter_token: presenterToken });
-          sessionStorage.setItem(`presenter-token:${roomId}`, presenterToken);
+          writeStorage(window.sessionStorage, `presenter-token:${roomId}`, presenterToken);
         }
 
         const initial = await apiRequest('get-state', { participant_id: participantId });
