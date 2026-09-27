@@ -93,6 +93,10 @@ end;
 $$;
 
 revoke all on function public.claim_presentation_example(text, uuid, integer) from public, anon, authenticated;
+grant execute on function public.claim_presentation_example(text, uuid, integer) to service_role;
+
+grant select, insert, update, delete on table public.presentation_rooms to service_role;
+grant select, insert, update, delete on table public.presentation_participants to service_role;
 
 do $$
 begin

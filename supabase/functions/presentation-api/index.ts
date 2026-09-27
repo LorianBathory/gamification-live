@@ -22,7 +22,7 @@ Deno.serve(async (request) => {
   if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
-  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const serviceRoleKey = Deno.env.get("SUPABASE_SECRET_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const presenterToken = Deno.env.get("PRESENTER_TOKEN");
   if (!supabaseUrl || !serviceRoleKey || !presenterToken) {
     return json({ error: "Server configuration is incomplete" }, 500);
