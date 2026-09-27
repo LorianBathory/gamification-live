@@ -28,11 +28,8 @@ if ($LASTEXITCODE -ne 0) {
   throw "Sign in first: gh auth login --hostname github.com --git-protocol https --web --clipboard"
 }
 
-$repositoryName = Read-Host "Public repository name [gamification-live]"
-if ([string]::IsNullOrWhiteSpace($repositoryName)) { $repositoryName = "gamification-live" }
-if ($repositoryName -notmatch '^[A-Za-z0-9._-]+$') {
-  throw "The repository name contains invalid characters."
-}
+$repositoryName = "gamification-live"
+Write-Host "Repository name: $repositoryName"
 
 $origin = (& git remote get-url origin 2>$null)
 if ([string]::IsNullOrWhiteSpace($origin)) {
