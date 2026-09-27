@@ -1934,7 +1934,14 @@
     const liveIndicator = document.getElementById('liveIndicator');
     const resetSessionButton = document.getElementById('resetSessionButton');
     const liveConfig = window.PRESENTATION_CONFIG || {};
-    const query = new URLSearchParams(window.location.search);
+    const query = window.URLSearchParams
+      ? new window.URLSearchParams(window.location.search)
+      : {
+          get(name) {
+            const match = window.location.search.match(new RegExp(`[?&]${name}=([^&]*)`));
+            return match ? decodeURIComponent(match[1].replace(/\+/g, ' ')) : null;
+          }
+        };
     const roomId = query.get('room') || liveConfig.defaultRoomId || 'gamification-live';
     const liveEnabled = Boolean(
       liveConfig.syncEnabled &&
