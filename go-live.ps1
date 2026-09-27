@@ -11,89 +11,89 @@ function Write-Step([string]$Text) {
 
 function Require-Command([string]$Name) {
   if (-not (Get-Command $Name -ErrorAction SilentlyContinue)) {
-    throw "Не найдена программа '$Name'."
+    throw "Required program not found: $Name"
   }
 }
 
-Write-Host "Публикация интерактивной презентации" -ForegroundColor Green
-Write-Host "Скрипт не сохраняет секрет Supabase в GitHub."
+Write-Host "Interactive presentation publishing" -ForegroundColor Green
+Write-Host "The Supabase secret will never be committed to GitHub."
 
 Require-Command "git"
 Require-Command "gh"
 Require-Command "npx.cmd"
 
-Write-Step "1. Проверка входа в GitHub"
+Write-Step "1. Check GitHub login"
 & gh auth status
 if ($LASTEXITCODE -ne 0) {
-  throw "Сначала войдите в GitHub: gh auth login --hostname github.com --git-protocol https --web --clipboard"
+  throw "Sign in first: gh auth login --hostname github.com --git-protocol https --web --clipboard"
 }
 
-$repositoryName = Read-Host "Название публичного репозитория [gamification-live]"
+$repositoryName = Read-Host "Public repository name [gamification-live]"
 if ([string]::IsNullOrWhiteSpace($repositoryName)) { $repositoryName = "gamification-live" }
 if ($repositoryName -notmatch '^[A-Za-z0-9._-]+$') {
-  throw "Название репозитория содержит недопустимые символы."
+  throw "The repository name contains invalid characters."
 }
 
 $origin = (& git remote get-url origin 2>$null)
 if ([string]::IsNullOrWhiteSpace($origin)) {
-  Write-Host "Создаю публичный репозиторий и отправляю локальные файлы..."
+  Write-Host "Creating a public repository and uploading the local files..."
   & gh repo create $repositoryName --public --source . --remote origin --push --description "Interactive presentation about gamification"
-  if ($LASTEXITCODE -ne 0) { throw "Не удалось создать репозиторий GitHub." }
+  if ($LASTEXITCODE -ne 0) { throw "Could not create the GitHub repository." }
 } else {
-  Write-Host "Репозиторий уже подключен: $origin"
+  Write-Host "Repository is already connected: $origin"
   & git push -u origin main
-  if ($LASTEXITCODE -ne 0) { throw "Не удалось отправить файлы в GitHub." }
+  if ($LASTEXITCODE -ne 0) { throw "Could not upload the files to GitHub." }
 }
 
 $repository = (& gh repo view --json nameWithOwner --jq .nameWithOwner).Trim()
-if ([string]::IsNullOrWhiteSpace($repository)) { throw "Не удалось определить адрес репозитория." }
+if ([string]::IsNullOrWhiteSpace($repository)) { throw "Could not identify the repository URL." }
 
 & gh api "repos/$repository/pages" *> $null
 if ($LASTEXITCODE -ne 0) {
   $pagesBody = @{ build_type = "legacy"; source = @{ branch = "main"; path = "/" } } | ConvertTo-Json -Compress
   $pagesBody | & gh api --method POST "repos/$repository/pages" --input - *> $null
   if ($LASTEXITCODE -ne 0) {
-    throw "Не удалось включить GitHub Pages. Включите Settings → Pages → Deploy from a branch → main → /(root)."
+    throw "Could not enable GitHub Pages. Enable Settings > Pages > Deploy from a branch > main > /(root)."
   }
 }
-Write-Host "GitHub Pages включен."
+Write-Host "GitHub Pages is enabled."
 
-Write-Step "2. Подключение Supabase"
-Write-Host "До продолжения создайте бесплатный проект: https://database.new"
-Write-Host "Дождитесь статуса Project is ready."
-Read-Host "Нажмите Enter, когда проект готов"
+Write-Step "2. Connect Supabase"
+Write-Host "Before continuing, create a free project at https://database.new"
+Write-Host "Wait until the project status says it is ready."
+Read-Host "Press Enter when the project is ready"
 
 & npx.cmd --yes supabase@latest projects list *> $null
 if ($LASTEXITCODE -ne 0) {
-  Write-Host "Сейчас Supabase попросит войти в аккаунт или вставить Personal Access Token."
+  Write-Host "Supabase will now ask you to sign in or paste a Personal Access Token."
   & npx.cmd --yes supabase@latest login
-  if ($LASTEXITCODE -ne 0) { throw "Вход в Supabase не завершён." }
+  if ($LASTEXITCODE -ne 0) { throw "Supabase login was not completed." }
 }
 
-$projectRef = Read-Host "Project ref из Supabase (Settings → General → Reference ID)"
-if ($projectRef -notmatch '^[a-z0-9]{10,32}$') { throw "Project ref выглядит неверно." }
+$projectRef = Read-Host "Supabase Project ref (Settings > General > Reference ID)"
+if ($projectRef -notmatch '^[a-z0-9]{10,32}$') { throw "The Project ref does not look valid." }
 
 & npx.cmd --yes supabase@latest link --project-ref $projectRef
-if ($LASTEXITCODE -ne 0) { throw "Не удалось подключить проект Supabase." }
+if ($LASTEXITCODE -ne 0) { throw "Could not link the Supabase project." }
 
-Write-Host "Проверяю миграцию..."
+Write-Host "Checking the database migration..."
 & npx.cmd --yes supabase@latest db push --dry-run
-if ($LASTEXITCODE -ne 0) { throw "Проверка базы данных не прошла." }
+if ($LASTEXITCODE -ne 0) { throw "The database check failed." }
 
-Write-Host "Создаю таблицы и серверную защиту таймаута..."
+Write-Host "Creating the tables and the server-side cooldown..."
 & npx.cmd --yes supabase@latest db push
-if ($LASTEXITCODE -ne 0) { throw "Не удалось применить миграцию базы данных." }
+if ($LASTEXITCODE -ne 0) { throw "Could not apply the database migration." }
 
 $presenterToken = ([guid]::NewGuid().ToString("N") + [guid]::NewGuid().ToString("N"))
 & npx.cmd --yes supabase@latest secrets set "PRESENTER_TOKEN=$presenterToken" --project-ref $projectRef
-if ($LASTEXITCODE -ne 0) { throw "Не удалось сохранить код ведущей." }
+if ($LASTEXITCODE -ne 0) { throw "Could not save the presenter code." }
 
-Write-Host "Публикую серверную функцию..."
+Write-Host "Deploying the server function..."
 & npx.cmd --yes supabase@latest functions deploy presentation-api --no-verify-jwt --project-ref $projectRef --use-api
-if ($LASTEXITCODE -ne 0) { throw "Не удалось опубликовать серверную функцию." }
+if ($LASTEXITCODE -ne 0) { throw "Could not deploy the server function." }
 
-$publishableKey = Read-Host "Publishable key из Supabase (кнопка Connect → Publishable key)"
-if ([string]::IsNullOrWhiteSpace($publishableKey)) { throw "Publishable key не указан." }
+$publishableKey = Read-Host "Supabase Publishable key (Connect > Publishable key)"
+if ([string]::IsNullOrWhiteSpace($publishableKey)) { throw "The Publishable key is required." }
 
 $projectUrl = "https://$projectRef.supabase.co"
 $config = @"
@@ -107,12 +107,12 @@ window.PRESENTATION_CONFIG = {
 Set-Content -LiteralPath (Join-Path $PSScriptRoot "presentation-config.js") -Value $config -Encoding utf8
 Set-Content -LiteralPath (Join-Path $PSScriptRoot "presenter-code.txt") -Value $presenterToken -Encoding utf8
 
-Write-Step "3. Финальная публикация"
+Write-Step "3. Final publish"
 & git add presentation-config.js
 & git commit -m "Enable live presentation"
-if ($LASTEXITCODE -ne 0) { throw "Не удалось сохранить публичную конфигурацию." }
+if ($LASTEXITCODE -ne 0) { throw "Could not save the public configuration." }
 & git push
-if ($LASTEXITCODE -ne 0) { throw "Не удалось отправить финальную конфигурацию." }
+if ($LASTEXITCODE -ne 0) { throw "Could not upload the final configuration." }
 
 $parts = $repository.Split('/')
 $owner = $parts[0]
@@ -122,10 +122,10 @@ $audienceUrl = "${baseUrl}?room=gamification-live"
 $presenterUrl = "${baseUrl}?room=gamification-live&presenter=1"
 
 Write-Host ""
-Write-Host "ГОТОВО" -ForegroundColor Green
-Write-Host "Для аудитории: $audienceUrl"
-Write-Host "Для ведущей:   $presenterUrl"
-Write-Host "Код ведущей сохранён только локально: $(Join-Path $PSScriptRoot 'presenter-code.txt')"
-Write-Host "Код ведущей: $presenterToken" -ForegroundColor Yellow
+Write-Host "DONE" -ForegroundColor Green
+Write-Host "Audience:  $audienceUrl"
+Write-Host "Presenter: $presenterUrl"
+Write-Host "Presenter code saved locally at: $(Join-Path $PSScriptRoot 'presenter-code.txt')"
+Write-Host "Presenter code: $presenterToken" -ForegroundColor Yellow
 Write-Host ""
-Write-Host "GitHub Pages может обновляться несколько минут."
+Write-Host "GitHub Pages may need a few minutes to update."
