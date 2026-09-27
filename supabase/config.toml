@@ -1,0 +1,4 @@
+project_id = "gamification-live"
+
+[functions.presentation-api]
+verify_jwt = false
