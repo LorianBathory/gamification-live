@@ -1526,6 +1526,51 @@
       box-shadow: 0 0 12px rgba(255, 79, 216, .6);
     }
 
+    .pointer-pulse-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 85;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .pointer-pulse {
+      position: absolute;
+      left: calc(var(--pulse-x) * 100%);
+      top: calc(var(--pulse-y) * 100%);
+      width: 24px;
+      aspect-ratio: 1;
+      border: 2px solid var(--pulse-color);
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--pulse-color) 36%, transparent);
+      box-shadow:
+        0 0 10px var(--pulse-color),
+        0 0 28px color-mix(in srgb, var(--pulse-color) 72%, transparent),
+        inset 0 0 8px color-mix(in srgb, var(--pulse-color) 68%, transparent);
+      transform: translate(-50%, -50%) scale(.35);
+      animation: pointer-pulse-fade 760ms cubic-bezier(.14, .72, .18, 1) forwards;
+      will-change: transform, opacity;
+    }
+
+    .pointer-pulse::after {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      border: 1px solid var(--pulse-color);
+      border-radius: inherit;
+      opacity: .65;
+    }
+
+    @keyframes pointer-pulse-fade {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(.28); }
+      18% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.65); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pointer-pulse { animation-duration: 520ms; }
+    }
+
     .presenter-reset {
       position: fixed;
       right: 52px;
@@ -1970,9 +2015,28 @@
       participantId = createParticipantId();
       writeStorage(window.localStorage, participantStorageKey, participantId);
     }
+    const pointerPulseColors = Object.freeze([
+      '#65f4ce',
+      '#ff4fd8',
+      '#ffe66d',
+      '#62b7ff',
+      '#ff965c',
+      '#a978ff'
+    ]);
+    const participantColorIndex = [...participantId].reduce(
+      (hash, character) => ((hash * 31) + character.charCodeAt(0)) >>> 0,
+      0
+    ) % pointerPulseColors.length;
+    const participantPulseColor = pointerPulseColors[participantColorIndex];
+    const pointerPulseLayer = document.createElement('div');
+    pointerPulseLayer.className = 'pointer-pulse-layer';
+    pointerPulseLayer.setAttribute('aria-hidden', 'true');
+    if (liveEnabled) document.body.append(pointerPulseLayer);
     const galleryControllers = new Map();
     let realtimeClient = null;
     let realtimeChannel = null;
+    let realtimeConnected = false;
+    let lastPointerPulseAt = 0;
     let presenterToken = '';
     let liveReady = false;
     let applyingRemoteState = false;
@@ -1998,6 +2062,58 @@
       liveIndicator.classList.toggle('is-error', tone === 'error');
       liveIndicator.textContent = status;
     };
+
+    const renderPointerPulse = payload => {
+      if (!liveEnabled || !payload) return;
+      const x = Number(payload.x);
+      const y = Number(payload.y);
+      const slideIndex = Number(payload.slide_index);
+      const color = pointerPulseColors.includes(payload.color) ? payload.color : pointerPulseColors[0];
+      if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 1 || y < 0 || y > 1) return;
+      if (!Number.isInteger(slideIndex) || slideIndex !== activeSlide) return;
+
+      while (pointerPulseLayer.children.length >= 48) {
+        pointerPulseLayer.firstElementChild?.remove();
+      }
+
+      const pulse = document.createElement('i');
+      pulse.className = 'pointer-pulse';
+      pulse.style.setProperty('--pulse-x', String(x));
+      pulse.style.setProperty('--pulse-y', String(y));
+      pulse.style.setProperty('--pulse-color', color);
+      pointerPulseLayer.append(pulse);
+
+      const removePulse = () => pulse.remove();
+      pulse.addEventListener('animationend', removePulse, { once: true });
+      window.setTimeout(removePulse, 1100);
+    };
+
+    const publishPointerPulse = event => {
+      if (!liveEnabled || !liveReady || !realtimeConnected || !realtimeChannel) return;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      if (event.isPrimary === false) return;
+
+      const now = window.performance?.now?.() ?? Date.now();
+      if (now - lastPointerPulseAt < 280) return;
+      lastPointerPulseAt = now;
+
+      const payload = {
+        x: Math.max(0, Math.min(1, event.clientX / Math.max(1, window.innerWidth))),
+        y: Math.max(0, Math.min(1, event.clientY / Math.max(1, window.innerHeight))),
+        slide_index: activeSlide,
+        color: participantPulseColor
+      };
+
+      renderPointerPulse(payload);
+      realtimeChannel
+        .send({ type: 'broadcast', event: 'pointer-pulse', payload })
+        .then(status => {
+          if (status !== 'ok') console.warn('Pointer pulse send status:', status);
+        })
+        .catch(error => console.error('Pointer pulse could not be sent', error));
+    };
+
+    document.addEventListener('pointerdown', publishPointerPulse, { passive: true });
 
     const apiRequest = async (action, payload = {}) => {
       const response = await fetch(`${liveConfig.supabaseUrl}/functions/v1/presentation-api`, {
@@ -2320,7 +2436,12 @@
           { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }
         );
         realtimeChannel = realtimeClient
-          .channel(`presentation:${roomId}`)
+          .channel(`presentation:${roomId}`, { config: { broadcast: { self: false, ack: false } } })
+          .on(
+            'broadcast',
+            { event: 'pointer-pulse' },
+            message => renderPointerPulse(message.payload)
+          )
           .on(
             'postgres_changes',
             { event: 'UPDATE', schema: 'public', table: 'presentation_rooms', filter: `id=eq.${roomId}` },
@@ -2328,9 +2449,13 @@
           )
           .subscribe(status => {
             if (status === 'SUBSCRIBED') {
+              realtimeConnected = true;
               setLiveStatus(liveMode === 'presenter' ? 'Presenter · live' : 'Live', 'connected');
             } else if (['CHANNEL_ERROR', 'TIMED_OUT'].includes(status)) {
+              realtimeConnected = false;
               setLiveStatus('Connection problem', 'error');
+            } else if (status === 'CLOSED') {
+              realtimeConnected = false;
             }
           });
       } catch (error) {
@@ -2354,6 +2479,7 @@
     });
 
     window.addEventListener('beforeunload', () => {
+      realtimeConnected = false;
       if (realtimeClient && realtimeChannel) realtimeClient.removeChannel(realtimeChannel);
     });
 
