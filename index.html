@@ -141,38 +141,39 @@
       top: 50%;
       z-index: 50;
       display: grid;
-      gap: 10px;
+      gap: 2px;
       transform: translateY(-50%);
     }
 
     .deck-progress button {
-      width: 9px;
-      height: 9px;
+      position: relative;
+      width: 32px;
+      height: 32px;
       padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .deck-progress button::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 18px;
+      height: 18px;
       border: 1px solid rgba(244, 242, 234, .55);
       border-radius: 50%;
       background: transparent;
-      cursor: pointer;
+      transform: translate(-50%, -50%);
       transition: .25s var(--ease);
     }
 
-    .deck-progress button[aria-current="true"] {
+    .deck-progress button[aria-current="true"]::before {
       border-color: var(--mint);
       background: var(--mint);
       box-shadow: 0 0 15px rgba(101, 244, 206, .65);
-      transform: scale(1.3);
-    }
-
-    .nav-hint {
-      position: fixed;
-      left: 4vw;
-      bottom: 26px;
-      z-index: 50;
-      margin: 0;
-      color: rgba(244, 242, 234, .4);
-      font-size: .78rem;
-      letter-spacing: .08em;
-      transition: opacity .25s ease;
+      transform: translate(-50%, -50%) scale(1.16);
     }
 
     .title-slide .slide-inner { align-items: flex-start; }
@@ -357,10 +358,131 @@
 
     .behavior-list li {
       padding: .62rem .82rem;
-      border: 1px solid rgba(255,79,216,.72);
+      border: 1px solid rgba(101,244,206,.72);
       background: rgba(244,242,234,.055);
-      font-size: clamp(.9rem, 1.2vw, 1.1rem);
+      font-size: clamp(.82rem, 1vw, 1rem);
+    }
+
+    .behavior-list li.is-new {
       animation: reward-pop .55s var(--ease) both;
+    }
+
+    .word-cloud-slide .slide-inner {
+      align-items: center;
+      justify-content: center;
+      padding-top: clamp(62px, 7vh, 84px);
+      padding-bottom: clamp(38px, 5vh, 58px);
+      overflow: hidden;
+    }
+
+    .word-cloud-heading {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    .word-cloud-heading h2 {
+      max-width: none;
+      margin-bottom: 0;
+      font-size: clamp(2.7rem, 5.2vw, 5.7rem);
+    }
+
+    .word-cloud-heading h2 span { color: var(--mint); }
+
+    .word-cloud-shell {
+      position: relative;
+      width: min(1120px, 100%);
+      flex: 1;
+      min-height: 470px;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+      perspective: 900px;
+    }
+
+    .word-cloud-shell::before,
+    .word-cloud-shell::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      border: 1px solid rgba(101, 244, 206, .16);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotate(-8deg);
+      pointer-events: none;
+    }
+
+    .word-cloud-shell::before {
+      width: min(74vw, 900px);
+      height: min(48vw, 520px);
+      box-shadow: 0 0 70px rgba(101, 244, 206, .05);
+    }
+
+    .word-cloud-shell::after {
+      width: min(58vw, 700px);
+      height: min(50vw, 550px);
+      border-color: rgba(255, 79, 216, .11);
+      transform: translate(-50%, -50%) rotate(58deg);
+    }
+
+    .behavior-cloud {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 470px;
+      overflow: visible;
+      transform-style: preserve-3d;
+      touch-action: none;
+      user-select: none;
+      cursor: grab;
+    }
+
+    .behavior-cloud.is-dragging { cursor: grabbing; }
+
+    .cloud-word {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin: 0;
+      padding: .18rem .28rem;
+      border: 0;
+      background: transparent;
+      color: var(--cloud-color);
+      font-family: inherit;
+      font-size: var(--word-size);
+      font-weight: 690;
+      letter-spacing: -.025em;
+      line-height: 1;
+      white-space: nowrap;
+      text-shadow: 0 0 18px color-mix(in srgb, var(--cloud-color) 48%, transparent);
+      transform-origin: center;
+      cursor: pointer;
+      will-change: transform, opacity, filter;
+    }
+
+    .cloud-word.is-emphasized {
+      text-shadow:
+        0 0 10px var(--cloud-color),
+        0 0 34px color-mix(in srgb, var(--cloud-color) 78%, transparent);
+    }
+
+    .cloud-word:focus-visible {
+      outline: 1px solid currentColor;
+      outline-offset: 3px;
+    }
+
+    .cloud-core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 10px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--paper);
+      box-shadow: 0 0 16px var(--mint), 0 0 70px rgba(101, 244, 206, .3);
+      transform: translate(-50%, -50%);
     }
 
     @keyframes reward-pop {
@@ -405,9 +527,8 @@
       position: relative;
       min-width: 0;
       padding: clamp(1.6rem, 3vw, 3.2rem);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      display: grid;
+      grid-template-rows: auto 1fr;
       border-top: 4px solid var(--card-accent);
       background: var(--card-bg);
       font-size: clamp(1.75rem, 2.7vw, 3.1rem);
@@ -418,7 +539,6 @@
     .definition-card:nth-child(2) {
       --card-accent: var(--blue);
       --card-bg: rgba(98,183,255,.09);
-      font-style: italic;
     }
 
     .definition-card:nth-child(3) {
@@ -427,7 +547,7 @@
     }
 
     .definition-label {
-      margin-bottom: 2.5rem;
+      margin-bottom: 0;
       color: var(--card-accent);
       font-size: .78rem;
       font-style: normal;
@@ -436,9 +556,14 @@
       text-transform: uppercase;
     }
 
+    .definition-card > span:last-child {
+      align-self: center;
+      display: block;
+    }
+
     .definition-card mark {
-      padding: 0 .07em;
-      background: linear-gradient(transparent 62%, rgba(101,244,206,.25) 62%);
+      padding: 0;
+      background: none;
       color: var(--paper);
     }
 
@@ -683,7 +808,7 @@
       overflow: visible;
     }
 
-    .loop-arrows path {
+    .loop-arrows > path {
       fill: none;
       stroke-width: 3;
       stroke-linecap: round;
@@ -701,6 +826,22 @@
       border-top: 3px solid var(--accent);
       background: rgba(23,27,30,.96);
       box-shadow: 0 18px 48px rgba(0,0,0,.24);
+    }
+
+    .loop-step {
+      position: absolute;
+      left: -18px;
+      top: -18px;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--slate-950);
+      font-size: 1rem;
+      font-weight: 820;
+      box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 36%, transparent);
     }
 
     .loop-node b {
@@ -739,7 +880,6 @@
     }
 
     .loop-center b { font-size: clamp(1.25rem, 1.7vw, 1.7rem); }
-    .loop-center span { color: var(--muted); font-size: .85rem; }
 
     .breakdown {
       display: grid;
@@ -829,25 +969,38 @@
       top: 50%;
       width: 52px;
       height: 52px;
-      border: 1px solid rgba(244,242,234,.3);
+      display: grid;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--nav-color) 55%, transparent);
       border-radius: 50%;
       background: rgba(16,19,21,.82);
-      color: var(--paper);
-      font-size: 1.25rem;
       cursor: pointer;
       pointer-events: auto;
       transform: translateY(-50%);
       transition: .2s ease;
     }
 
-    #horizontalPrev { left: 18px; }
-    #horizontalNext { right: 18px; }
+    .horizontal-nav button::before {
+      content: "";
+      width: 15px;
+      height: 18px;
+      background: var(--nav-color);
+      clip-path: polygon(100% 0, 100% 100%, 0 50%);
+      filter: drop-shadow(0 0 7px var(--nav-color));
+      transition: transform .2s ease;
+    }
+
+    #horizontalPrev { left: 18px; --nav-color: var(--pink); }
+    #horizontalNext { right: 18px; --nav-color: var(--mint); }
+    #horizontalNext::before { transform: rotate(180deg); }
 
     .horizontal-nav button:hover:not(:disabled) {
-      border-color: var(--mint);
-      color: var(--mint);
-      box-shadow: 0 0 20px rgba(101,244,206,.14);
+      border-color: var(--nav-color);
+      box-shadow: 0 0 20px color-mix(in srgb, var(--nav-color) 24%, transparent);
     }
+
+    #horizontalPrev:hover:not(:disabled)::before { transform: translateX(-2px); }
+    #horizontalNext:hover:not(:disabled)::before { transform: rotate(180deg) translateX(-2px); }
 
     .h-dots {
       position: absolute;
@@ -1461,6 +1614,193 @@
 
     .closing-slide h1 span { color: var(--mint); }
 
+    .bad-gamification-slide .slide-inner {
+      position: relative;
+      z-index: 2;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 0;
+      text-align: center;
+    }
+
+    .bad-gamification-slide h1 {
+      position: relative;
+      z-index: 2;
+      max-width: 17ch;
+      margin: 0;
+      font-size: clamp(2.8rem, 5vw, 5.3rem);
+      font-weight: 620;
+      letter-spacing: -.05em;
+      line-height: .98;
+    }
+
+    .bad-gamification-slide h1 span {
+      color: var(--pink);
+      text-shadow: 0 0 34px rgba(255, 79, 216, .16);
+    }
+
+    .thought-bubble {
+      --bubble-accent: var(--mint);
+      position: absolute;
+      z-index: 4;
+      width: min(27vw, 420px);
+      height: clamp(142px, 20vh, 190px);
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--paper);
+      cursor: pointer;
+      perspective: 1100px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .thought-bubble::before,
+    .thought-bubble::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      border: 1px solid color-mix(in srgb, var(--bubble-accent) 55%, transparent);
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--bubble-accent) 13%, var(--slate-900));
+      box-shadow: 0 0 16px color-mix(in srgb, var(--bubble-accent) 18%, transparent);
+      transition: background .35s ease, box-shadow .35s ease;
+    }
+
+    .thought-bubble::before {
+      width: 20px;
+      height: 20px;
+      left: 17%;
+      bottom: -18px;
+    }
+
+    .thought-bubble::after {
+      width: 9px;
+      height: 9px;
+      left: 11%;
+      bottom: -31px;
+    }
+
+    .thought-bubble:hover::before,
+    .thought-bubble:hover::after,
+    .thought-bubble[aria-pressed="true"]::before,
+    .thought-bubble[aria-pressed="true"]::after {
+      background: color-mix(in srgb, var(--bubble-accent) 26%, var(--slate-900));
+      box-shadow: 0 0 22px color-mix(in srgb, var(--bubble-accent) 34%, transparent);
+    }
+
+    .thought-bubble-card {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform .72s cubic-bezier(.2, .82, .25, 1);
+    }
+
+    .thought-bubble[aria-pressed="true"] .thought-bubble-card {
+      transform: rotateY(180deg);
+    }
+
+    .thought-bubble-face {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px 30px;
+      border: 2px solid color-mix(in srgb, var(--bubble-accent) 78%, transparent);
+      border-radius: 48% 52% 46% 54% / 53% 46% 54% 47%;
+      background:
+        radial-gradient(circle at 27% 24%, color-mix(in srgb, var(--bubble-accent) 15%, transparent), transparent 34%),
+        rgba(23, 27, 30, .94);
+      box-shadow:
+        0 0 0 5px color-mix(in srgb, var(--bubble-accent) 5%, transparent),
+        0 0 28px color-mix(in srgb, var(--bubble-accent) 16%, transparent),
+        inset 0 0 32px rgba(255, 255, 255, .025);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .thought-bubble-front {
+      color: var(--bubble-accent);
+      font-size: clamp(2.1rem, 3.5vw, 3.5rem);
+      font-weight: 750;
+      letter-spacing: .16em;
+      text-indent: .16em;
+      text-shadow: 0 0 22px color-mix(in srgb, var(--bubble-accent) 54%, transparent);
+    }
+
+    .thought-bubble-back {
+      transform: rotateY(180deg);
+      color: var(--paper);
+      font-size: clamp(.92rem, 1.25vw, 1.22rem);
+      font-weight: 570;
+      letter-spacing: -.015em;
+      line-height: 1.28;
+    }
+
+    .thought-bubble-a {
+      --bubble-accent: var(--mint);
+      left: 5vw;
+      top: 10vh;
+      transform: rotate(-2deg);
+    }
+
+    .thought-bubble-b {
+      --bubble-accent: var(--yellow);
+      right: 5vw;
+      top: 10vh;
+      width: min(30vw, 460px);
+      transform: rotate(2deg);
+    }
+
+    .thought-bubble-b::before { left: auto; right: 18%; }
+    .thought-bubble-b::after { left: auto; right: 12%; }
+
+    .thought-bubble-c {
+      --bubble-accent: var(--blue);
+      left: 50%;
+      bottom: 6vh;
+      width: min(29vw, 450px);
+      transform: translateX(-50%) rotate(1deg);
+    }
+
+    .thought-bubble-c::before { left: 62%; }
+    .thought-bubble-c::after { left: 70%; }
+
+    .bad-tetromino {
+      left: 5vw;
+      right: auto;
+      bottom: 7vh;
+      z-index: 1;
+      opacity: .74;
+      transform: rotate(-11deg) scale(.66);
+      transform-origin: left bottom;
+    }
+
+    .tetromino.bad-tetromino i { opacity: 1; }
+    .tetromino.bad-tetromino i:nth-child(2),
+    .tetromino.bad-tetromino i:nth-child(6) { opacity: 0; }
+    .tetromino.bad-tetromino i:nth-child(1) { background: rgba(255,79,216,.14); }
+    .tetromino.bad-tetromino i:nth-child(3),
+    .tetromino.bad-tetromino i:nth-child(5) { background: rgba(255,230,109,.14); }
+
+    .bad-dot-a {
+      left: 11vw;
+      top: 46vh;
+      background: var(--pink);
+      box-shadow: 0 0 0 8px rgba(255,79,216,.08), 0 0 34px rgba(255,79,216,.55);
+      animation-delay: -.6s;
+    }
+
+    .bad-dot-b {
+      right: 10vw;
+      bottom: 27vh;
+      background: var(--mint);
+      box-shadow: 0 0 0 8px rgba(101,244,206,.08), 0 0 34px rgba(101,244,206,.55);
+      animation-delay: -2.1s;
+    }
+
     .closing-tetromino {
       left: 7vw;
       right: auto;
@@ -1592,8 +1932,7 @@
 
     .audience-mode,
     .audience-mode .deck { overflow: hidden; }
-    .audience-mode .deck-progress,
-    .audience-mode .nav-hint { display: none; }
+    .audience-mode .deck-progress { display: none; }
     .audience-mode .horizontal-nav,
     .audience-mode .gallery-nav,
     .audience-mode .reward-trigger { pointer-events: none; }
@@ -1606,6 +1945,8 @@
       .deck-progress { right: 10px; }
       .goal h3 { max-width: none; }
       .behavior-list { min-height: 86px; }
+      .word-cloud-shell,
+      .behavior-cloud { min-height: 440px; }
       .example-strip { grid-template-columns: 1fr 1fr 1fr; overflow-x: auto; }
       .example-figure { min-width: 270px; }
       .breakdown { grid-template-columns: .85fr 1.15fr; gap: 2rem; }
@@ -1618,16 +1959,27 @@
       .level-map,
       .decision-layout { grid-template-columns: .85fr 1.15fr; gap: 2.5rem; }
       .reward-stage { gap: 1.5rem; }
+      .bad-gamification-slide h1 { max-width: 13ch; }
+      .thought-bubble { width: min(31vw, 300px); }
+      .thought-bubble-b { width: min(35vw, 340px); }
+      .thought-bubble-c { width: min(38vw, 350px); }
+      .thought-bubble-back { font-size: clamp(.82rem, 1.7vw, 1rem); }
     }
 
     @media (max-width: 640px) {
       h1 { font-size: clamp(3.6rem, 19vw, 6rem); }
       h2 { font-size: clamp(2.55rem, 13vw, 4rem); }
       .slide-inner, .h-inner { width: calc(100% - 36px); padding-top: 80px; padding-bottom: 70px; }
-      .nav-hint, .side-hint { display: none; }
+      .side-hint { display: none; }
       .definition-stack { grid-template-columns: 1fr; grid-template-rows: auto auto auto; overflow-y: auto; }
       .definition-line:nth-child(1) { grid-column: 1; }
       .definition-card { min-height: 220px; }
+      .word-cloud-slide .slide-inner { width: calc(100% - 22px); }
+      .word-cloud-heading { width: calc(100% - 14px); }
+      .word-cloud-heading h2 { font-size: clamp(2.35rem, 11vw, 3.6rem); }
+      .word-cloud-shell,
+      .behavior-cloud { min-height: 460px; }
+      .cloud-word { font-size: calc(var(--word-size) * .78); }
       .example-strip { display: flex; }
       .example-figure { flex: 0 0 78vw; }
       .breakdown { grid-template-columns: 1fr; gap: 1.2rem; }
@@ -1653,6 +2005,22 @@
       .reward-slot { min-height: 180px; }
       .reward-group { min-height: 0; padding: 18px 0; }
       .vertical-gallery { min-height: 360px; height: 52vh; }
+      .bad-gamification-slide h1 {
+        max-width: 10ch;
+        font-size: clamp(2.35rem, 10vw, 3.7rem);
+      }
+      .thought-bubble {
+        width: 43vw;
+        height: 132px;
+      }
+      .thought-bubble-a { left: 4vw; top: 9vh; }
+      .thought-bubble-b { right: 4vw; top: 9vh; width: 46vw; }
+      .thought-bubble-c { bottom: 7vh; width: 62vw; }
+      .thought-bubble-face { padding: 18px; }
+      .thought-bubble-back { font-size: .78rem; }
+      .bad-tetromino { bottom: 4vh; transform: rotate(-11deg) scale(.4); }
+      .bad-dot-a { left: 7vw; top: 54vh; }
+      .bad-dot-b { right: 7vw; bottom: 27vh; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1669,11 +2037,10 @@
   <div class="live-indicator" id="liveIndicator" hidden aria-live="polite">Connecting</div>
   <button class="presenter-reset" id="resetSessionButton" type="button" hidden>Reset session</button>
   <nav class="deck-progress" aria-label="Slide navigation"></nav>
-  <p class="nav-hint">↑ ↓ &nbsp; move through slides</p>
 
   <main class="deck" id="deck" aria-label="Presentation about gamification">
     <section class="slide title-slide" data-title="What is gamification?" aria-labelledby="slide-1-title">
-      <span class="slide-number">00 / 10</span>
+      <span class="slide-number">00 / 12</span>
       <div class="slide-inner">
         <h1 id="slide-1-title">What is <span>gamification?</span></h1>
       </div>
@@ -1684,7 +2051,7 @@
     </section>
 
     <section class="slide about-slide" data-title="About me" aria-labelledby="slide-2-title">
-      <span class="slide-number">01 / 10</span>
+      <span class="slide-number">01 / 12</span>
       <div class="slide-inner">
         <h1 id="slide-2-title">Who I am and <em>why</em> I’m here</h1>
       </div>
@@ -1692,7 +2059,7 @@
     </section>
 
     <section class="slide goals-slide" data-title="What gamification can do" aria-labelledby="slide-3-title">
-      <span class="slide-number">02 / 10</span>
+      <span class="slide-number">02 / 12</span>
       <div class="slide-inner">
         <p class="eyebrow">Product goal</p>
         <h2 id="slide-3-title">What gamification can do</h2>
@@ -1707,8 +2074,22 @@
       </div>
     </section>
 
+    <section class="slide word-cloud-slide" data-title="What can gamification encourage?" aria-labelledby="slide-cloud-title">
+      <span class="slide-number">03 / 12</span>
+      <div class="slide-inner">
+        <div class="word-cloud-heading">
+          <p class="eyebrow">Desired behavior</p>
+          <h2 id="slide-cloud-title">What can gamification <span>encourage?</span></h2>
+        </div>
+        <div class="word-cloud-shell" aria-label="Examples of target behaviors">
+          <div class="behavior-cloud" id="behaviorCloud" role="group" aria-label="Interactive cloud of target behaviors"></div>
+          <i class="cloud-core" aria-hidden="true"></i>
+        </div>
+      </div>
+    </section>
+
     <section class="slide definition-slide" data-title="Definition" aria-labelledby="slide-4-title">
-      <span class="slide-number">03 / 10</span>
+      <span class="slide-number">04 / 12</span>
       <div class="slide-inner">
         <div class="definition-stack">
           <p class="definition-line" id="slide-4-title">Gamification is</p>
@@ -1719,7 +2100,7 @@
     </section>
 
     <section class="slide horizontal-stage" data-title="The game loop" aria-labelledby="slide-5-title">
-      <span class="slide-number">04 / 10</span>
+      <span class="slide-number">05 / 12</span>
       <div class="slide-inner slider-layout">
         <h2 id="slide-5-title">The game loop</h2>
         <div class="carousel-shell">
@@ -1729,18 +2110,24 @@
                 <div class="loop-diagram">
                   <svg class="loop-arrows" viewBox="0 0 1000 460" aria-hidden="true">
                     <defs>
-                      <marker id="loop-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#65f4ce"></path>
+                      <marker id="loop-arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#62b7ff"></path>
+                      </marker>
+                      <marker id="loop-arrow-yellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffe66d"></path>
+                      </marker>
+                      <marker id="loop-arrow-pink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#ff4fd8"></path>
                       </marker>
                     </defs>
-                    <path d="M 610 72 C 760 90 842 178 822 292" stroke="#62b7ff" marker-end="url(#loop-arrow)"></path>
-                    <path d="M 730 378 C 595 438 405 438 270 378" stroke="#ffe66d" marker-end="url(#loop-arrow)"></path>
-                    <path d="M 178 292 C 158 178 240 90 390 72" stroke="#ff4fd8" marker-end="url(#loop-arrow)"></path>
+                    <path d="M 610 72 C 760 90 842 178 822 292" stroke="#62b7ff" marker-end="url(#loop-arrow-blue)"></path>
+                    <path d="M 730 378 C 595 438 405 438 270 378" stroke="#ffe66d" marker-end="url(#loop-arrow-yellow)"></path>
+                    <path d="M 178 292 C 158 178 240 90 390 72" stroke="#ff4fd8" marker-end="url(#loop-arrow-pink)"></path>
                   </svg>
-                  <div class="loop-node loop-node-1"><b>Promise of a reward</b><small>A reason to want to act</small></div>
-                  <div class="loop-node loop-node-2"><b>Desired behavior</b><small>What the product wants</small></div>
-                  <div class="loop-node loop-node-3"><b>Receiving the reward</b><small>Value created by the system’s rules</small></div>
-                  <div class="loop-center"><b>Loop</b><span>the reward creates a reason to act again</span></div>
+                  <div class="loop-node loop-node-1"><span class="loop-step">1</span><b>Promise of a reward</b><small>A reason to want to act</small></div>
+                  <div class="loop-node loop-node-2"><span class="loop-step">2</span><b>Desired Action</b><small>What the product wants</small></div>
+                  <div class="loop-node loop-node-3"><span class="loop-step">3</span><b>Receiving the reward</b><small>Value created by the system’s rules</small></div>
+                  <div class="loop-center"><b>Loop</b></div>
                 </div>
               </div>
             </article>
@@ -1792,9 +2179,9 @@
           </div>
 
           <div class="horizontal-nav" aria-label="Example navigation">
-            <button type="button" id="horizontalPrev" aria-label="Previous example">←</button>
+            <button type="button" id="horizontalPrev" aria-label="Previous example"></button>
             <span class="h-dots" id="horizontalDots" aria-hidden="true"></span>
-            <button type="button" id="horizontalNext" aria-label="Next example">→</button>
+            <button type="button" id="horizontalNext" aria-label="Next example"></button>
           </div>
         </div>
       </div>
@@ -1802,7 +2189,7 @@
     </section>
 
     <section class="slide content-slide achievements-slide" data-title="Achievements" aria-labelledby="slide-6-title">
-      <span class="slide-number">05 / 10</span>
+      <span class="slide-number">06 / 12</span>
       <div class="slide-inner">
         <p class="eyebrow">Examples of game mechanics</p>
         <h2 id="slide-6-title">Achievements</h2>
@@ -1843,7 +2230,7 @@
     </section>
 
     <section class="slide content-slide quest-slide" data-title="Quests" aria-labelledby="slide-7-title">
-      <span class="slide-number">06 / 10</span>
+      <span class="slide-number">07 / 12</span>
       <div class="slide-inner">
         <p class="eyebrow">Examples of game mechanics</p>
         <h2 id="slide-7-title">Quests</h2>
@@ -1875,7 +2262,7 @@
     </section>
 
     <section class="slide content-slide levels-slide" data-title="Progress and levels" aria-labelledby="slide-8-title">
-      <span class="slide-number">07 / 10</span>
+      <span class="slide-number">08 / 12</span>
       <div class="slide-inner">
         <p class="eyebrow">Examples of game mechanics</p>
         <h2 id="slide-8-title">Progress and levels</h2>
@@ -1898,7 +2285,7 @@
     </section>
 
     <section class="slide content-slide rewards-slide" data-title="Rewards" aria-labelledby="slide-9-title">
-      <span class="slide-number">08 / 10</span>
+      <span class="slide-number">09 / 12</span>
       <div class="slide-inner">
         <h2 id="slide-9-title">Rewards</h2>
         <div class="reward-stage" id="rewardStage">
@@ -1930,10 +2317,38 @@
       </div>
     </section>
 
-    <section class="slide content-slide decision-slide" data-title="Does your product need gamification?" aria-labelledby="slide-10-title">
-      <span class="slide-number">09 / 10</span>
+    <section class="slide title-slide bad-gamification-slide" data-title="It is very easy to create bad gamification" aria-labelledby="slide-10-title">
+      <span class="slide-number">10 / 12</span>
       <div class="slide-inner">
-        <h2 id="slide-10-title">Does your product need <span>gamification?</span></h2>
+        <h1 id="slide-10-title">It is very easy to create <span>bad gamification.</span></h1>
+      </div>
+      <button class="thought-bubble thought-bubble-a" type="button" aria-pressed="false" aria-label="Reveal thought: an empty leaderboard">
+        <span class="thought-bubble-card">
+          <span class="thought-bubble-face thought-bubble-front" aria-hidden="true">•••</span>
+          <span class="thought-bubble-face thought-bubble-back" aria-hidden="true">The leaderboard is completely empty. Am I the only one on this app?</span>
+        </span>
+      </button>
+      <button class="thought-bubble thought-bubble-b" type="button" aria-pressed="false" aria-label="Reveal thought: achievements completed long ago">
+        <span class="thought-bubble-card">
+          <span class="thought-bubble-face thought-bubble-front" aria-hidden="true">•••</span>
+          <span class="thought-bubble-face thought-bubble-back" aria-hidden="true">I completed all the achievements a year ago. I’ve stayed in this app for too long.</span>
+        </span>
+      </button>
+      <button class="thought-bubble thought-bubble-c" type="button" aria-pressed="false" aria-label="Reveal thought: an irrelevant quest">
+        <span class="thought-bubble-card">
+          <span class="thought-bubble-face thought-bubble-front" aria-hidden="true">•••</span>
+          <span class="thought-bubble-face thought-bubble-back" aria-hidden="true">Another stupid quest. That’s not what I’m here for!</span>
+        </span>
+      </button>
+      <div class="tetromino bad-tetromino" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <i class="pinball-dot bad-dot-a" aria-hidden="true"></i>
+      <i class="pinball-dot bad-dot-b" aria-hidden="true"></i>
+    </section>
+
+    <section class="slide content-slide decision-slide" data-title="Does your product need gamification?" aria-labelledby="slide-11-title">
+      <span class="slide-number">11 / 12</span>
+      <div class="slide-inner">
+        <h2 id="slide-11-title">Does your product need <span>gamification?</span></h2>
         <div class="decision-layout decision-flow-only">
           <div class="decision-rule">
             <p>Your product has a <em>problem</em></p>
@@ -1948,10 +2363,10 @@
       <i class="pinball-dot decision-dot-b" aria-hidden="true"></i>
     </section>
 
-    <section class="slide title-slide closing-slide" data-title="Don’t be afraid to look silly" aria-labelledby="slide-11-title">
-      <span class="slide-number">10 / 10</span>
+    <section class="slide title-slide closing-slide" data-title="Don’t be afraid to look silly" aria-labelledby="slide-12-title">
+      <span class="slide-number">12 / 12</span>
       <div class="slide-inner">
-        <h1 id="slide-11-title">Don’t be afraid to look <span>silly</span></h1>
+        <h1 id="slide-12-title">Don’t be afraid to look <span>silly</span></h1>
       </div>
       <div class="tetromino closing-tetromino" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <i class="pinball-dot closing-dot-a" aria-hidden="true"></i>
@@ -1959,13 +2374,12 @@
     </section>
   </main>
 
-  <script src="presentation-config.js"></script>
+  <script src="presentation-config.js?v=word-cloud"></script>
   <script src="supabase-browser.js"></script>
   <script>
     const deck = document.getElementById('deck');
     const slides = [...document.querySelectorAll('.slide')];
     const progress = document.querySelector('.deck-progress');
-    const hint = document.querySelector('.nav-hint');
     const horizontalTrack = document.getElementById('horizontalTrack');
     const horizontalPanels = [...horizontalTrack.querySelectorAll('.h-panel')];
     const horizontalPrev = document.getElementById('horizontalPrev');
@@ -1976,6 +2390,7 @@
     const rewardSlots = [...document.querySelectorAll('.reward-slot')];
     const rewardGroups = [...document.querySelectorAll('.reward-group')];
     const rewardTriggers = [...document.querySelectorAll('.reward-trigger')];
+    const thoughtBubbles = [...document.querySelectorAll('.thought-bubble')];
     const liveIndicator = document.getElementById('liveIndicator');
     const resetSessionButton = document.getElementById('resetSessionButton');
     const liveConfig = window.PRESENTATION_CONFIG || {};
@@ -1988,7 +2403,13 @@
           }
         };
     const roomId = query.get('room') || liveConfig.defaultRoomId || 'gamification-live';
+    const localPreviewRequested = query.get('preview') === '1' && (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.protocol === 'file:'
+    );
     const liveEnabled = Boolean(
+      !localPreviewRequested &&
       liveConfig.syncEnabled &&
       liveConfig.supabaseUrl &&
       liveConfig.supabasePublishableKey &&
@@ -2047,7 +2468,6 @@
     let activeSlide = 0;
     let activeHorizontal = 0;
     let rewardReveal = 0;
-    let wheelLock = false;
 
     if (liveEnabled) {
       document.body.classList.add('live-enabled', `${liveMode}-mode`);
@@ -2055,6 +2475,17 @@
       liveIndicator.textContent = liveMode === 'presenter' ? 'Presenter · connecting' : 'Live · connecting';
       if (liveMode === 'presenter') resetSessionButton.hidden = false;
     }
+
+    thoughtBubbles.forEach(bubble => {
+      const hiddenThought = bubble.querySelector('.thought-bubble-back');
+      const closedLabel = bubble.getAttribute('aria-label');
+      bubble.addEventListener('click', () => {
+        const isOpen = bubble.getAttribute('aria-pressed') !== 'true';
+        bubble.setAttribute('aria-pressed', String(isOpen));
+        bubble.setAttribute('aria-label', isOpen ? `Hide thought: ${hiddenThought.textContent}` : closedLabel);
+        hiddenThought.setAttribute('aria-hidden', String(!isOpen));
+      });
+    });
 
     const setLiveStatus = (status, tone = '') => {
       if (!liveEnabled) return;
@@ -2168,13 +2599,6 @@
       activeSlide = index;
       progressButtons.forEach((button, i) => button.setAttribute('aria-current', String(i === index)));
       slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
-      if (index === horizontalSlideIndex) {
-        hint.textContent = '← →  browse examples';
-      } else if (index === rewardSlideIndex) {
-        hint.textContent = '→  reveal rewards';
-      } else {
-        hint.textContent = '↑ ↓  move through slides';
-      }
       queuePresenterState({ current_slide: index });
     };
 
@@ -2249,18 +2673,6 @@
     deck.addEventListener('wheel', event => {
       if (liveMode === 'audience') {
         event.preventDefault();
-        return;
-      }
-      if (wheelLock || Math.abs(event.deltaY) < 18) return;
-      if (activeSlide === horizontalSlideIndex) {
-        const direction = event.deltaY > 0 ? 1 : -1;
-        const canMoveHorizontal = (direction > 0 && activeHorizontal < horizontalPanels.length - 1) || (direction < 0 && activeHorizontal > 0);
-        if (canMoveHorizontal) {
-          event.preventDefault();
-          wheelLock = true;
-          goHorizontal(direction);
-          window.setTimeout(() => wheelLock = false, 620);
-        }
       }
     }, { passive: false });
 
@@ -2299,57 +2711,214 @@
 
     const behaviors = [
       'Make a payment',
-      'Invite a friend',
-      'Try a new feature',
-      'Complete a profile',
-      'Finish onboarding',
-      'Come back tomorrow',
-      'Share a result',
-      'Add your first item',
-      'Enable notifications',
-      'Save a favorite',
-      'Complete the first task',
-      'Link an account',
-      'Create a project',
-      'Upload content',
-      'Finish a lesson',
-      'Reach a milestone',
-      'Redeem a reward',
+      'Complete a purchase',
+      'Add to cart',
       'Start a trial',
+      'Upgrade a plan',
       'Renew a subscription',
+      'Redeem a reward',
+      'Invite a friend',
+      'Refer a colleague',
+      'Share a result',
       'Leave a review',
       'Join a community',
+      'Follow a creator',
+      'Post a comment',
+      'Answer a question',
+      'Give feedback',
+      'Complete a profile',
+      'Verify an email',
+      'Finish onboarding',
+      'Enable notifications',
+      'Link an account',
+      'Connect an integration',
+      'Try a new feature',
+      'Use search',
+      'Apply a filter',
+      'Compare options',
+      'Save a favorite',
+      'Create a project',
+      'Add your first item',
+      'Upload content',
+      'Complete the first task',
+      'Finish a lesson',
+      'Watch a tutorial',
       'Set a goal',
       'Track progress',
-      'Complete a purchase'
+      'Reach a milestone',
+      'Maintain a streak',
+      'Complete a challenge',
+      'Come back tomorrow',
+      'Return to an unfinished task',
+      'Explore advanced settings',
+      'Customize a profile'
     ];
+    const behaviorCloud = document.getElementById('behaviorCloud');
+    const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+    const cloudPoints = behaviors.map((behavior, index) => {
+      const vertical = 1 - (2 * (index + .5) / behaviors.length);
+      const radius = Math.sqrt(1 - vertical * vertical);
+      const angle = goldenAngle * index;
+      const word = document.createElement('button');
+      const size = .78 + ((index * 11) % 7) * .09 + (behavior.length < 16 ? .12 : 0);
+      word.type = 'button';
+      word.className = 'cloud-word';
+      word.setAttribute('aria-pressed', 'false');
+      word.setAttribute('aria-label', `Enlarge: ${behavior}`);
+      word.textContent = behavior;
+      word.style.setProperty('--cloud-color', pointerPulseColors[index % pointerPulseColors.length]);
+      word.style.setProperty('--word-size', `${size.toFixed(2)}rem`);
+      behaviorCloud.append(word);
+      return {
+        element: word,
+        x: Math.cos(angle) * radius,
+        y: vertical,
+        z: Math.sin(angle) * radius
+      };
+    });
+
+    let cloudRotationX = -.16;
+    let cloudRotationY = -.4;
+    let cloudDrag = null;
+    let emphasizedCloudWord = null;
+    let suppressCloudClickUntil = 0;
+
+    const renderBehaviorCloud = () => {
+      const width = behaviorCloud.clientWidth;
+      const height = behaviorCloud.clientHeight;
+      if (!width || !height) return;
+
+      const spreadX = Math.min(width * .43, 480);
+      const spreadY = Math.min(height * .41, 245);
+      const sinY = Math.sin(cloudRotationY);
+      const cosY = Math.cos(cloudRotationY);
+      const sinX = Math.sin(cloudRotationX);
+      const cosX = Math.cos(cloudRotationX);
+
+      cloudPoints.forEach(point => {
+        const rotatedX = point.x * cosY - point.z * sinY;
+        const rotatedZ = point.x * sinY + point.z * cosY;
+        const rotatedY = point.y * cosX - rotatedZ * sinX;
+        const depthZ = point.y * sinX + rotatedZ * cosX;
+        const depth = (depthZ + 1) / 2;
+        const isEmphasized = point.element === emphasizedCloudWord;
+        const scale = (.58 + depth * .62) * (isEmphasized ? 2.2 : 1);
+        const x = rotatedX * spreadX;
+        const y = rotatedY * spreadY;
+
+        point.element.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${scale.toFixed(3)})`;
+        point.element.style.opacity = isEmphasized ? '1' : (.16 + depth * .84).toFixed(3);
+        point.element.style.filter = isEmphasized ? 'none' : `blur(${((1 - depth) * .7).toFixed(2)}px)`;
+        point.element.style.zIndex = isEmphasized ? '200' : String(Math.round(depth * 100));
+      });
+    };
+
+    behaviorCloud.addEventListener('pointerdown', event => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      cloudDrag = {
+        pointerId: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        moved: false
+      };
+      behaviorCloud.classList.add('is-dragging');
+    });
+
+    behaviorCloud.addEventListener('pointermove', event => {
+      if (!cloudDrag || event.pointerId !== cloudDrag.pointerId) return;
+      const deltaX = event.clientX - cloudDrag.x;
+      const deltaY = event.clientY - cloudDrag.y;
+      if (!cloudDrag.moved && Math.abs(deltaX) + Math.abs(deltaY) > 2) {
+        cloudDrag.moved = true;
+        behaviorCloud.setPointerCapture?.(event.pointerId);
+      }
+      cloudDrag.x = event.clientX;
+      cloudDrag.y = event.clientY;
+      cloudRotationY += deltaX * .006;
+      cloudRotationX = Math.max(-1.05, Math.min(1.05, cloudRotationX - deltaY * .005));
+      renderBehaviorCloud();
+    });
+
+    const finishCloudDrag = event => {
+      if (!cloudDrag || event.pointerId !== cloudDrag.pointerId) return;
+      if (cloudDrag.moved) suppressCloudClickUntil = window.performance.now() + 260;
+      if (behaviorCloud.hasPointerCapture?.(event.pointerId)) {
+        behaviorCloud.releasePointerCapture(event.pointerId);
+      }
+      behaviorCloud.classList.remove('is-dragging');
+      cloudDrag = null;
+    };
+
+    behaviorCloud.addEventListener('pointerup', finishCloudDrag);
+    behaviorCloud.addEventListener('pointercancel', finishCloudDrag);
+
+    behaviorCloud.addEventListener('click', event => {
+      const word = event.target.closest('.cloud-word');
+      if (!word || window.performance.now() < suppressCloudClickUntil) return;
+      const nextWord = emphasizedCloudWord === word ? null : word;
+      cloudPoints.forEach(point => {
+        const active = point.element === nextWord;
+        point.element.classList.toggle('is-emphasized', active);
+        point.element.setAttribute('aria-pressed', String(active));
+        point.element.setAttribute('aria-label', `${active ? 'Shrink' : 'Enlarge'}: ${point.element.textContent}`);
+      });
+      emphasizedCloudWord = nextWord;
+      renderBehaviorCloud();
+    });
+
+    window.addEventListener('resize', renderBehaviorCloud, { passive: true });
+    window.requestAnimationFrame(() => {
+      renderBehaviorCloud();
+      if (document.fonts?.ready) {
+        document.fonts.ready.then(renderBehaviorCloud).catch(() => {});
+      }
+    });
+
     const behaviorButton = document.getElementById('behaviorButton');
     const behaviorList = document.getElementById('behaviorList');
     let behaviorIndex = 0;
 
     const renderBehaviors = count => {
-      behaviorIndex = Math.max(0, Number(count) || 0);
-      const displayLimit = 12;
-      behaviorList.replaceChildren();
-      behaviors.slice(0, Math.min(behaviorIndex, displayLimit)).forEach(behavior => {
-        const item = document.createElement('li');
-        item.textContent = behavior;
-        behaviorList.append(item);
+      const previousIndex = behaviorIndex;
+      const nextIndex = Math.max(0, Math.min(behaviors.length, Number(count) || 0));
+      const displayLimit = window.innerWidth < 640 ? 10 : 18;
+      const firstVisible = Math.max(0, nextIndex - displayLimit);
+      const visibleIndexes = new Set(
+        Array.from({ length: nextIndex - firstVisible }, (_, offset) => firstVisible + offset)
+      );
+      const existingItems = new Map(
+        [...behaviorList.children].map(item => [Number(item.dataset.behaviorIndex), item])
+      );
+
+      existingItems.forEach((item, index) => {
+        if (!visibleIndexes.has(index)) item.remove();
       });
-      if (behaviorIndex > displayLimit) {
-        const overflow = document.createElement('li');
-        overflow.textContent = `+${behaviorIndex - displayLimit} more actions`;
-        behaviorList.append(overflow);
+
+      for (let index = firstVisible; index < nextIndex; index += 1) {
+        let item = existingItems.get(index);
+        if (!item) {
+          item = document.createElement('li');
+          item.dataset.behaviorIndex = String(index);
+          item.textContent = behaviors[index];
+          if (nextIndex > previousIndex && index >= previousIndex) {
+            item.classList.add('is-new');
+            item.addEventListener('animationend', () => item.classList.remove('is-new'), { once: true });
+          }
+        }
+        behaviorList.append(item);
       }
+
+      behaviorIndex = nextIndex;
     };
 
     const updateBehaviorButton = () => {
       window.clearTimeout(cooldownTimer);
+      if (behaviorIndex >= behaviors.length) {
+        behaviorButton.textContent = 'All examples shown';
+        behaviorButton.disabled = true;
+        return;
+      }
       if (!liveEnabled) {
-        if (behaviorIndex >= behaviors.length) {
-          behaviorButton.textContent = 'All examples shown';
-          behaviorButton.disabled = true;
-        }
         return;
       }
 

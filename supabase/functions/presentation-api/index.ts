@@ -80,6 +80,7 @@ Deno.serve(async (request) => {
       p_room_id: roomId,
       p_participant_id: participantId,
       p_cooldown_seconds: 60,
+      p_max_examples: 42,
     });
     if (error) return json({ error: error.message }, 500);
     return json(data?.[0] ?? { accepted: false });
@@ -98,7 +99,7 @@ Deno.serve(async (request) => {
     const requested = (body.state ?? {}) as Record<string, unknown>;
     const state: Record<string, number | string> = { updated_at: new Date().toISOString() };
     const fields: Array<[string, number, number]> = [
-      ["current_slide", 0, 10],
+      ["current_slide", 0, 12],
       ["horizontal_index", 0, 3],
       ["reward_reveal", 0, 3],
       ["achievement_gallery_index", 0, 3],
