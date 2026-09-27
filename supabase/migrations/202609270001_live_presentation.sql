@@ -82,11 +82,11 @@ begin
     return;
   end if;
 
-  update public.presentation_rooms
-    set example_count = example_count + 1,
+  update public.presentation_rooms as room
+    set example_count = room.example_count + 1,
         updated_at = v_now
-    where id = p_room_id
-    returning presentation_rooms.example_count into v_count;
+    where room.id = p_room_id
+    returning room.example_count into v_count;
 
   return query select true, v_count, v_now + v_interval;
 end;
