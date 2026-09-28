@@ -233,15 +233,118 @@
       50% { transform: translateY(-18px); }
     }
 
+    .about-slide .slide-inner {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(430px, 1.1fr);
+      gap: clamp(2.5rem, 6vw, 7rem);
+      align-items: center;
+    }
+
     .about-slide h1 {
-      max-width: 10.5ch;
-      font-size: clamp(4.2rem, 9vw, 8.8rem);
+      max-width: 8.5ch;
+      font-size: clamp(4rem, 7.1vw, 7.2rem);
     }
 
     .about-slide h1 em {
       color: var(--yellow);
       font-style: normal;
     }
+
+    .about-experience {
+      position: relative;
+      min-height: min(62vh, 570px);
+      padding: clamp(1.5rem, 3vw, 2.5rem);
+      border: 0;
+      color: var(--paper);
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      isolation: isolate;
+    }
+
+    .about-experience::before {
+      content: "";
+      position: absolute;
+      left: clamp(1.5rem, 3vw, 2.5rem);
+      right: clamp(1.5rem, 3vw, 2.5rem);
+      top: 48%;
+      height: 1px;
+      background: linear-gradient(90deg, var(--mint), rgba(101,244,206,.08));
+      opacity: .45;
+    }
+
+    .experience-step {
+      position: absolute;
+      opacity: 0;
+      filter: blur(7px);
+      transform: translateY(24px) scale(.98);
+      transition: opacity .55s var(--ease), transform .55s var(--ease), filter .55s var(--ease);
+    }
+
+    .experience-step.is-visible {
+      opacity: 1;
+      filter: none;
+      transform: none;
+    }
+
+    .experience-step strong,
+    .experience-step span,
+    .experience-step small { display: block; }
+
+    .experience-step strong {
+      font-size: clamp(2.5rem, 4.4vw, 4.7rem);
+      font-weight: 700;
+      letter-spacing: -.06em;
+      line-height: .9;
+    }
+
+    .experience-step span {
+      margin-top: .55rem;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.45vw, 1.35rem);
+      font-weight: 650;
+      letter-spacing: .03em;
+    }
+
+    .experience-community span,
+    .experience-design span {
+      font-size: clamp(1rem, 1.45vw, 1.35rem);
+    }
+
+    .experience-total {
+      left: clamp(1.5rem, 3vw, 2.5rem);
+      top: clamp(1rem, 3vh, 2.5rem);
+    }
+
+    .experience-total strong {
+      color: var(--mint);
+      font-size: clamp(5.5rem, 10vw, 9.2rem);
+      text-shadow: 0 0 34px rgba(101,244,206,.16);
+    }
+
+    .experience-total span {
+      margin-top: .25rem;
+      color: var(--paper);
+      font-size: clamp(1.3rem, 2vw, 1.8rem);
+    }
+
+    .experience-community {
+      left: clamp(1.5rem, 3vw, 2.5rem);
+      bottom: clamp(1.5rem, 4vh, 3.25rem);
+      width: 42%;
+    }
+
+    .experience-community strong { color: var(--blue); }
+
+    .experience-design {
+      right: clamp(1.5rem, 3vw, 2.5rem);
+      bottom: clamp(1.5rem, 4vh, 3.25rem);
+      width: 47%;
+    }
+
+    .experience-design strong { color: var(--pink); }
 
     .about-slide .orbit {
       position: absolute;
@@ -1917,13 +2020,24 @@
     .audience-mode .deck-progress { display: none; }
     .audience-mode .horizontal-nav,
     .audience-mode .gallery-nav,
-    .audience-mode .reward-trigger { pointer-events: none; }
+    .audience-mode .reward-trigger,
+    .audience-mode .about-experience { pointer-events: none; }
     .audience-mode .horizontal-nav,
     .audience-mode .gallery-nav { opacity: .22; }
 
     @media (max-width: 900px) {
       .slide { min-height: 640px; }
       .slide-inner, .h-inner { width: min(100% - 48px, 760px); padding-top: 88px; }
+      .about-slide .slide-inner {
+        grid-template-columns: minmax(0, .82fr) minmax(380px, 1.18fr);
+        gap: 1rem;
+      }
+      .about-slide h1 { font-size: clamp(3.4rem, 7.8vw, 5.4rem); }
+      .about-experience { min-height: min(58vh, 500px); padding-inline: 1rem; }
+      .experience-total,
+      .experience-community { left: 1rem; }
+      .experience-design { right: 1rem; }
+      .about-experience::before { left: 1rem; right: 1rem; }
       .deck-progress { right: 10px; }
       .goal h3 { max-width: none; }
       .behavior-list { min-height: 86px; }
@@ -1954,6 +2068,45 @@
       h1 { font-size: clamp(3.6rem, 19vw, 6rem); }
       h2 { font-size: clamp(2.55rem, 13vw, 4rem); }
       .slide-inner, .h-inner { width: calc(100% - 36px); padding-top: 80px; padding-bottom: 70px; }
+      .about-slide .slide-inner {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(0, 1fr);
+        align-content: center;
+        gap: .5rem;
+        padding-top: 58px;
+        padding-bottom: 20px;
+      }
+      .about-slide h1 {
+        max-width: 9.5ch;
+        font-size: clamp(2.8rem, 13vw, 4rem);
+      }
+      .about-experience {
+        min-height: 0;
+        height: 100%;
+        max-height: 470px;
+        padding: .5rem 0;
+      }
+      .about-experience::before {
+        left: 0;
+        right: 0;
+        top: 45%;
+      }
+      .experience-total { left: 0; top: .4rem; }
+      .experience-total strong { font-size: clamp(4.4rem, 22vw, 6.6rem); }
+      .experience-total span { font-size: clamp(1.05rem, 5vw, 1.35rem); }
+      .experience-community {
+        left: 0;
+        bottom: .8rem;
+        width: 43%;
+      }
+      .experience-design {
+        right: 0;
+        bottom: .8rem;
+        width: 52%;
+      }
+      .experience-step strong { font-size: clamp(2rem, 9vw, 2.7rem); }
+      .experience-step span { margin-top: .35rem; font-size: clamp(.8rem, 3.6vw, 1rem); }
+      .about-slide .orbit { right: -24vw; top: 27vh; width: 105vw; opacity: .55; }
       .side-hint { display: none; }
       .definition-stack { grid-template-columns: 1fr; grid-template-rows: auto auto auto; overflow-y: auto; }
       .definition-line:nth-child(1) { grid-column: 1; }
@@ -2257,6 +2410,20 @@
       <span class="slide-number">01 / 13</span>
       <div class="slide-inner">
         <h1 id="slide-2-title">Who I am and <em>why</em> I’m here</h1>
+        <button class="about-experience" id="aboutExperience" type="button" aria-label="Show total experience">
+          <span class="experience-step experience-total">
+            <strong>13</strong>
+            <span>years in games</span>
+          </span>
+          <span class="experience-step experience-community">
+            <strong>6 years</strong>
+            <span>Community Management</span>
+          </span>
+          <span class="experience-step experience-design">
+            <strong>7 years</strong>
+            <span>Game Design</span>
+          </span>
+        </button>
       </div>
       <div class="orbit" aria-hidden="true"></div>
     </section>
@@ -2474,7 +2641,7 @@
           <ul class="level-uses">
             <li>Reveal a complex product gradually</li>
             <li>Make progress in learning visible</li>
-            <li>Break large amounts of content into manageable chunks</li>
+            <li>Give new benefits</li>
             <li>Reward a series of desired actions</li>
           </ul>
         </div>
@@ -2499,7 +2666,7 @@
             <article class="reward-group" style="--group-accent: var(--blue)">
               <small>Inside the product</small>
               <h3>Progress</h3>
-              <p>An achievement, a new level, access to new content, or new customization options.</p>
+              <p>An achievement, a new level, access to new content.</p>
             </article>
           </div>
           <div class="reward-slot">
@@ -2583,6 +2750,9 @@
     const horizontalNext = document.getElementById('horizontalNext');
     const horizontalDots = document.getElementById('horizontalDots');
     const horizontalSlideIndex = slides.indexOf(document.querySelector('.horizontal-stage'));
+    const aboutSlideIndex = slides.indexOf(document.querySelector('.about-slide'));
+    const aboutExperience = document.getElementById('aboutExperience');
+    const experienceSteps = [...aboutExperience.querySelectorAll('.experience-step')];
     const rewardSlideIndex = slides.indexOf(document.querySelector('.rewards-slide'));
     const rewardSlots = [...document.querySelectorAll('.reward-slot')];
     const rewardGroups = [...document.querySelectorAll('.reward-group')];
@@ -2665,6 +2835,7 @@
     let cooldownTimer = null;
     let activeSlide = 0;
     let activeHorizontal = 0;
+    let aboutReveal = 0;
     let rewardReveal = 0;
 
     if (liveEnabled) {
@@ -2838,6 +3009,20 @@
       queuePresenterState({ horizontal_index: activeHorizontal });
     };
 
+    const setAboutReveal = (count) => {
+      aboutReveal = Math.max(0, Math.min(experienceSteps.length, count));
+      experienceSteps.forEach((step, index) => {
+        const isVisible = index < aboutReveal;
+        step.classList.toggle('is-visible', isVisible);
+        step.setAttribute('aria-hidden', String(!isVisible));
+      });
+      aboutExperience.setAttribute(
+        'aria-label',
+        aboutReveal < experienceSteps.length ? 'Show next part of experience' : 'All experience is visible'
+      );
+      queuePresenterState({ about_reveal: aboutReveal });
+    };
+
     const goVertical = (direction) => {
       const next = Math.max(0, Math.min(slides.length - 1, activeSlide + direction));
       if (next !== activeSlide) slides[next].scrollIntoView({ behavior: 'smooth' });
@@ -2876,7 +3061,13 @@
       if (interactive && (event.key === 'Enter' || event.key === ' ')) return;
       if (liveMode === 'audience') return;
 
-      if (activeSlide === horizontalSlideIndex && event.key === 'ArrowRight') {
+      if (activeSlide === aboutSlideIndex && event.key === 'ArrowRight') {
+        event.preventDefault();
+        setAboutReveal(aboutReveal + 1);
+      } else if (activeSlide === aboutSlideIndex && event.key === 'ArrowLeft') {
+        event.preventDefault();
+        setAboutReveal(aboutReveal - 1);
+      } else if (activeSlide === horizontalSlideIndex && event.key === 'ArrowRight') {
         event.preventDefault();
         goHorizontal(1);
       } else if (activeSlide === horizontalSlideIndex && event.key === 'ArrowLeft') {
@@ -2907,6 +3098,7 @@
     }, { passive: false });
 
     if (liveMode !== 'audience') {
+      aboutExperience.addEventListener('click', () => setAboutReveal(aboutReveal + 1));
       horizontalPrev.addEventListener('click', () => goHorizontal(-1));
       horizontalNext.addEventListener('click', () => goHorizontal(1));
       rewardTriggers.forEach((trigger, index) => {
@@ -3200,6 +3392,7 @@
       const horizontalIndex = Math.max(0, Math.min(horizontalPanels.length - 1, Number(room.horizontal_index) || 0));
       setActiveSlide(slideIndex);
       setActiveHorizontal(horizontalIndex);
+      setAboutReveal(Number(room.about_reveal) || 0);
       setRewardReveal(Number(room.reward_reveal) || 0);
       galleryControllers.get('achievement_gallery_index')?.show(Number(room.achievement_gallery_index) || 0, { publish: false });
       galleryControllers.get('quest_gallery_index')?.show(Number(room.quest_gallery_index) || 0, { publish: false });
@@ -3287,6 +3480,7 @@
 
     setActiveSlide(0);
     setActiveHorizontal(0);
+    setAboutReveal(0);
     setRewardReveal(0);
     renderBehaviors(0);
     updateBehaviorButton();

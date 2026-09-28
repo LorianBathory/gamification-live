@@ -101,6 +101,7 @@ Deno.serve(async (request) => {
     const fields: Array<[string, number, number]> = [
       ["current_slide", 0, 13],
       ["horizontal_index", 0, 3],
+      ["about_reveal", 0, 3],
       ["reward_reveal", 0, 3],
       ["achievement_gallery_index", 0, 3],
       ["quest_gallery_index", 0, 2],
@@ -136,6 +137,7 @@ Deno.serve(async (request) => {
       .update({
         current_slide: 0,
         horizontal_index: 0,
+        about_reveal: 0,
         reward_reveal: 0,
         achievement_gallery_index: 0,
         quest_gallery_index: 0,
