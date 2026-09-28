@@ -2846,14 +2846,45 @@
       if (liveMode === 'presenter') resetSessionButton.hidden = false;
     }
 
-    thoughtBubbles.forEach(bubble => {
+    const thoughtBubbleFields = [
+      'thought_bubble_1_open',
+      'thought_bubble_2_open',
+      'thought_bubble_3_open'
+    ];
+
+    const setThoughtBubbleOpen = (index, isOpen) => {
+      const bubble = thoughtBubbles[index];
+      if (!bubble) return;
       const hiddenThought = bubble.querySelector('.thought-bubble-back');
+      const closedLabel = bubble.dataset.closedLabel || bubble.getAttribute('aria-label');
+      bubble.dataset.closedLabel = closedLabel;
+      bubble.setAttribute('aria-pressed', String(isOpen));
+      bubble.setAttribute('aria-label', isOpen ? `Hide thought: ${hiddenThought.textContent}` : closedLabel);
+      hiddenThought.setAttribute('aria-hidden', String(!isOpen));
+    };
+
+    const applyThoughtBubbleState = room => {
+      thoughtBubbleFields.forEach((field, index) => setThoughtBubbleOpen(index, room?.[field] === true));
+    };
+
+    thoughtBubbles.forEach((bubble, index) => {
       const closedLabel = bubble.getAttribute('aria-label');
-      bubble.addEventListener('click', () => {
+      bubble.dataset.closedLabel = closedLabel;
+      bubble.addEventListener('click', async () => {
+        const wasOpen = bubble.getAttribute('aria-pressed') === 'true';
         const isOpen = bubble.getAttribute('aria-pressed') !== 'true';
-        bubble.setAttribute('aria-pressed', String(isOpen));
-        bubble.setAttribute('aria-label', isOpen ? `Hide thought: ${hiddenThought.textContent}` : closedLabel);
-        hiddenThought.setAttribute('aria-hidden', String(!isOpen));
+        setThoughtBubbleOpen(index, isOpen);
+        if (!liveEnabled) return;
+
+        try {
+          const result = await apiRequest('set-thought', { bubble_index: index, open: isOpen });
+          applyThoughtBubbleState(result.room);
+          setLiveStatus(liveMode === 'presenter' ? 'Presenter · live' : 'Live · connected', 'connected');
+        } catch (error) {
+          setThoughtBubbleOpen(index, wasOpen);
+          setLiveStatus(liveMode === 'presenter' ? 'Presenter · sync error' : 'Live · sync error', 'error');
+          console.error(error);
+        }
       });
     });
 
@@ -3395,6 +3426,7 @@
       setActiveHorizontal(horizontalIndex);
       setAboutReveal(Number(room.about_reveal) || 0);
       setRewardReveal(Number(room.reward_reveal) || 0);
+      applyThoughtBubbleState(room);
       galleryControllers.get('achievement_gallery_index')?.show(Number(room.achievement_gallery_index) || 0, { publish: false });
       galleryControllers.get('quest_gallery_index')?.show(Number(room.quest_gallery_index) || 0, { publish: false });
       renderBehaviors(Number(room.example_count) || 0);

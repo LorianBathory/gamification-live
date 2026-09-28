@@ -86,6 +86,29 @@ Deno.serve(async (request) => {
     return json(data?.[0] ?? { accepted: false });
   }
 
+  if (action === "set-thought") {
+    const bubbleIndex = Number(body.bubble_index);
+    const open = body.open;
+    if (!Number.isInteger(bubbleIndex) || bubbleIndex < 0 || bubbleIndex > 2) {
+      return json({ error: "Invalid bubble index" }, 400);
+    }
+    if (typeof open !== "boolean") return json({ error: "Invalid thought state" }, 400);
+
+    const field = [
+      "thought_bubble_1_open",
+      "thought_bubble_2_open",
+      "thought_bubble_3_open",
+    ][bubbleIndex] as string;
+    const { data, error } = await admin
+      .from("presentation_rooms")
+      .update({ [field]: open, updated_at: new Date().toISOString() })
+      .eq("id", roomId)
+      .select("*")
+      .single();
+    if (error) return json({ error: error.message }, 500);
+    return json({ room: data });
+  }
+
   const suppliedToken = String(body.presenter_token ?? "");
   if (!suppliedToken || suppliedToken !== presenterToken) {
     return json({ error: "Presenter authorization failed" }, 403);
@@ -141,6 +164,9 @@ Deno.serve(async (request) => {
         reward_reveal: 0,
         achievement_gallery_index: 0,
         quest_gallery_index: 0,
+        thought_bubble_1_open: false,
+        thought_bubble_2_open: false,
+        thought_bubble_3_open: false,
         example_count: 0,
         reset_version: Date.now(),
         updated_at: new Date().toISOString(),
