@@ -792,94 +792,76 @@
       justify-content: center;
     }
 
-    .loop-diagram {
-      position: relative;
-      width: min(1040px, 92%);
+    .loop-image-wrap {
+      width: min(1120px, 100%);
       height: 100%;
       min-height: 430px;
       margin: 0 auto;
-    }
-
-    .loop-arrows {
-      position: absolute;
-      inset: 2% 4%;
-      width: 92%;
-      height: 96%;
-      overflow: visible;
-    }
-
-    .loop-arrows > path {
-      fill: none;
-      stroke-width: 3;
-      stroke-linecap: round;
-      filter: drop-shadow(0 0 7px rgba(101,244,206,.18));
-    }
-
-    .loop-node {
-      position: absolute;
-      width: min(28%, 260px);
-      min-height: 108px;
-      padding: 18px 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border-top: 3px solid var(--accent);
-      background: rgba(23,27,30,.96);
-      box-shadow: 0 18px 48px rgba(0,0,0,.24);
-    }
-
-    .loop-step {
-      position: absolute;
-      left: -18px;
-      top: -18px;
-      width: 42px;
-      height: 42px;
       display: grid;
       place-items: center;
-      border-radius: 50%;
-      background: var(--accent);
-      color: var(--slate-950);
-      font-size: 1rem;
-      font-weight: 820;
-      box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 36%, transparent);
     }
 
-    .loop-node b {
-      margin-bottom: .4rem;
-      font-size: clamp(1.2rem, 1.8vw, 1.8rem);
-      font-weight: 620;
-      letter-spacing: -.04em;
-      line-height: 1.04;
+    .loop-image-wrap img {
+      display: block;
+      width: min(1280px, 122%);
+      height: auto;
+      max-width: none;
+      max-height: 100%;
+      object-fit: contain;
     }
 
-    .loop-node small {
-      color: var(--muted);
-      font-size: clamp(.78rem, 1vw, .98rem);
-      line-height: 1.4;
+    .loop-system-slide .slide-inner {
+      justify-content: flex-start;
+      width: min(1500px, calc(100% - 8vw));
+      padding-top: clamp(66px, 7vh, 84px);
+      padding-bottom: clamp(48px, 5vh, 66px);
     }
 
-    .loop-node-1 { left: 50%; top: 2%; transform: translateX(-50%); --accent: var(--blue); }
-    .loop-node-2 { right: 7%; bottom: 7%; --accent: var(--yellow); }
-    .loop-node-3 { left: 7%; bottom: 7%; --accent: var(--pink); }
+    .loop-system-slide h2 {
+      max-width: none;
+      margin-bottom: clamp(1rem, 2vh, 1.6rem);
+      font-size: clamp(2.5rem, 4vw, 4.4rem);
+    }
 
-    .loop-center {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: min(24%, 220px);
-      aspect-ratio: 1;
+    .loop-system-layout {
+      min-height: 0;
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
+      gap: clamp(2rem, 4vw, 5rem);
+      align-items: center;
+    }
+
+    .loop-system-visual {
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
       display: grid;
       place-items: center;
-      align-content: center;
-      border: 1px solid rgba(244,242,234,.18);
-      border-radius: 50%;
-      background: rgba(16,19,21,.72);
-      text-align: center;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 42px rgba(101,244,206,.08);
     }
 
-    .loop-center b { font-size: clamp(1.25rem, 1.7vw, 1.7rem); }
+    .loop-system-visual img {
+      display: block;
+      width: 100%;
+      max-height: min(66vh, 720px);
+      object-fit: contain;
+    }
+
+    .loop-system-copy {
+      margin: 0;
+      padding-left: clamp(1.4rem, 2.2vw, 2.5rem);
+      border-left: 3px solid var(--mint);
+      color: var(--paper);
+      font-size: clamp(1.65rem, 2.45vw, 2.85rem);
+      font-weight: 540;
+      letter-spacing: -.035em;
+      line-height: 1.12;
+    }
+
+    .loop-system-copy em {
+      color: var(--mint);
+      font-style: normal;
+    }
 
     .breakdown {
       display: grid;
@@ -1953,8 +1935,10 @@
       .breakdown-media { height: min(55vh, 540px); }
       .slider-layout { width: min(100% - 48px, 920px); padding-top: 72px; }
       .h-inner { width: 100%; padding: 1.5rem 4.2rem 2.4rem; }
-      .loop-diagram { min-height: 390px; }
-      .loop-node { width: 30%; min-height: 96px; padding: 14px; }
+      .loop-image-wrap { min-height: 390px; }
+      .loop-system-slide .slide-inner { width: min(100% - 48px, 920px); padding-top: 72px; }
+      .loop-system-layout { grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr); gap: 2rem; }
+      .loop-system-copy { font-size: clamp(1.4rem, 3vw, 2rem); }
       .mechanic-layout,
       .level-map,
       .decision-layout { grid-template-columns: .85fr 1.15fr; gap: 2.5rem; }
@@ -1991,8 +1975,34 @@
       .slider-layout h2 { font-size: clamp(2.35rem, 11vw, 3.3rem); }
       .carousel-shell { overflow: visible; }
       .h-inner { width: 100%; padding: 1rem 3rem 2.5rem; }
-      .loop-diagram { min-height: 430px; transform: scale(.82); }
-      .loop-node { width: 40%; }
+      .loop-image-wrap { min-height: 430px; }
+      .loop-system-slide .slide-inner {
+        width: calc(100% - 36px);
+        padding-top: 64px;
+        padding-bottom: 44px;
+      }
+      .loop-system-slide h2 {
+        margin-bottom: .55rem;
+        font-size: clamp(2.05rem, 9.4vw, 3rem);
+        line-height: .98;
+      }
+      .loop-system-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        align-content: center;
+        gap: .7rem;
+      }
+      .loop-system-visual { height: auto; }
+      .loop-system-visual img {
+        width: 116%;
+        max-width: none;
+        max-height: 43vh;
+      }
+      .loop-system-copy {
+        padding-left: 1rem;
+        font-size: clamp(1.08rem, 5vw, 1.45rem);
+        line-height: 1.16;
+      }
       .image-lightbox { padding: 58px 18px 24px; }
       .content-slide .slide-inner { width: calc(100% - 36px); overflow-y: auto; }
       .mechanic-layout,
@@ -2021,6 +2031,199 @@
       .bad-tetromino { bottom: 4vh; transform: rotate(-11deg) scale(.4); }
       .bad-dot-a { left: 7vw; top: 54vh; }
       .bad-dot-b { right: 7vw; bottom: 27vh; }
+
+      .slide-number { top: 18px; left: 18px; }
+      .live-indicator { top: 18px; right: 18px; }
+      .deck-progress { right: 0; }
+      .deck-progress button { width: 28px; height: 28px; }
+      .deck-progress button::before { width: 15px; height: 15px; }
+
+      h1 { max-width: 100%; font-size: clamp(3rem, 14.7vw, 4.5rem); }
+      h2 { font-size: clamp(2.15rem, 10.5vw, 3rem); }
+      .eyebrow { margin-bottom: .55rem; font-size: .7rem; }
+      .slide-inner,
+      .h-inner {
+        width: calc(100% - 32px);
+        padding-top: 58px;
+        padding-bottom: 28px;
+      }
+
+      .title-slide .slide-inner { width: calc(100% - 36px); }
+      .title-slide h1 { max-width: 100%; }
+      .title-rail { left: 18px; bottom: 11vh; }
+
+      .goals-slide .slide-inner {
+        justify-content: flex-start;
+        padding-top: 58px;
+        padding-bottom: 22px;
+        overflow-y: auto;
+      }
+      .goals-slide h2 { margin-bottom: .8rem; }
+      .goal { padding-top: 12px; }
+      .goal h3 { margin-bottom: .45rem; font-size: clamp(1.7rem, 8vw, 2.2rem); }
+      .goal p { margin-bottom: .7rem; font-size: .95rem; line-height: 1.35; }
+      .behavior-button { min-height: 46px; padding: 0 1.15rem; }
+      .behavior-list { min-height: 0; margin-top: .7rem; gap: 6px; }
+      .behavior-list li { padding: .38rem .52rem; font-size: .75rem; }
+
+      .word-cloud-slide .slide-inner {
+        width: calc(100% - 20px);
+        padding-top: 54px;
+        padding-bottom: 16px;
+      }
+      .word-cloud-heading { width: calc(100% - 16px); }
+      .word-cloud-heading h2 { font-size: clamp(2rem, 9.7vw, 2.8rem); line-height: .96; }
+      .word-cloud-shell,
+      .behavior-cloud { min-height: 0; }
+      .word-cloud-shell { width: 100%; }
+      .behavior-cloud { height: 100%; }
+      .cloud-word { font-size: calc(var(--word-size) * .64); }
+      .word-cloud-shell::before { width: 92%; height: 58%; }
+      .word-cloud-shell::after { width: 70%; height: 64%; }
+
+      .definition-slide .slide-inner { padding-top: 54px; padding-bottom: 22px; }
+      .definition-stack {
+        height: 100%;
+        min-height: 0;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr 1fr;
+        gap: 10px;
+        overflow: hidden;
+      }
+      .definition-line:nth-child(1) { font-size: clamp(2rem, 9.6vw, 2.7rem); }
+      .definition-card {
+        min-height: 0;
+        padding: 16px 18px;
+        font-size: clamp(1.25rem, 5.8vw, 1.65rem);
+        line-height: 1.08;
+      }
+      .definition-label { font-size: .65rem; }
+
+      .slider-layout {
+        width: calc(100% - 24px);
+        padding-top: 56px;
+        padding-bottom: 28px;
+      }
+      .slider-layout h2 {
+        margin-bottom: .55rem;
+        font-size: clamp(2.25rem, 10.5vw, 2.85rem);
+      }
+      .carousel-shell { min-height: 0; overflow: hidden; }
+      .h-inner { width: 100%; padding: .5rem 2.7rem 1.65rem; }
+      .loop-image-wrap { width: 100%; height: 100%; min-height: 0; }
+      .loop-image-wrap img { width: 126%; max-width: none; max-height: 100%; }
+      .breakdown {
+        height: 100%;
+        min-height: 0;
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(118px, 42%) minmax(0, 1fr);
+        gap: .55rem;
+        align-items: stretch;
+      }
+      .breakdown-media { width: 100%; height: auto; max-height: none; min-height: 0; }
+      .breakdown-media--portrait { width: auto; height: 100%; justify-self: center; }
+      .breakdown-copy { min-height: 0; }
+      .breakdown-copy .eyebrow { margin-bottom: .3rem; }
+      .breakdown-copy h3 {
+        max-width: none;
+        margin-bottom: .35rem;
+        font-size: clamp(1.35rem, 6.4vw, 1.7rem);
+      }
+      .mini-cycle li {
+        grid-template-columns: 27px 1fr;
+        gap: 7px;
+        padding: 5px 0;
+        font-size: clamp(.76rem, 3.4vw, .88rem);
+        line-height: 1.2;
+      }
+      .mini-cycle li::before { font-size: .64rem; }
+      .horizontal-nav button { width: 42px; height: 42px; }
+      .horizontal-nav button::before { width: 12px; height: 15px; }
+      #horizontalPrev { left: 3px; }
+      #horizontalNext { right: 3px; }
+      .h-dots { bottom: 7px; }
+      .h-dots i { width: 20px; }
+      .examples-sources { right: 12px; bottom: 5px; font-size: .58rem; }
+
+      .content-slide .slide-inner {
+        width: calc(100% - 36px);
+        padding-top: 54px;
+        padding-bottom: 20px;
+        overflow: hidden;
+      }
+      .content-slide h2 {
+        margin-bottom: .7rem;
+        font-size: clamp(2.15rem, 10.5vw, 2.85rem);
+      }
+      .achievements-slide .slide-inner,
+      .quest-slide .slide-inner { padding-top: 48px; padding-bottom: 12px; }
+      .achievements-slide h2,
+      .quest-slide h2 { margin-bottom: .45rem; }
+      .mechanic-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: .55rem;
+        align-items: stretch;
+      }
+      .mechanic-lead { align-self: start; padding-left: 12px; border-left-width: 2px; }
+      .mechanic-lead p { margin-bottom: .45rem; font-size: .88rem; line-height: 1.35; }
+      .mechanic-lead strong { margin: .35rem 0 .35rem; font-size: 1.28rem; }
+      .mechanic-points { margin-top: .55rem; gap: .3rem; }
+      .mechanic-points li { padding-left: 1rem; font-size: .88rem; line-height: 1.18; }
+      .mechanic-points li::before { top: .42em; width: 6px; height: 6px; }
+      .vertical-gallery { height: auto; min-height: 0; grid-template-rows: 28px minmax(0, 1fr) 28px; }
+      .gallery-nav { font-size: 1.2rem; }
+
+      .level-map {
+        grid-template-columns: 1fr;
+        grid-template-rows: 150px auto;
+        gap: .65rem;
+        align-items: stretch;
+      }
+      .level-stack { height: 150px; gap: 7px; }
+      .level-stack span { padding: 8px 4px; border-top-width: 2px; font-size: 1rem; }
+      .level-uses li { padding: 8px 0; font-size: .92rem; line-height: 1.18; }
+      .level-uses li::before { width: 7px; height: 7px; margin-right: 9px; }
+
+      .reward-stage {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        align-items: stretch;
+        overflow: hidden;
+      }
+      .reward-slot { min-height: 0; align-items: stretch; }
+      .reward-group { min-height: 0; padding: 8px 0; border-top-width: 2px; }
+      .reward-group small { font-size: .62rem; }
+      .reward-group h3 { margin: .35rem 0 .4rem; font-size: 1.25rem; }
+      .reward-group p { font-size: .82rem; line-height: 1.25; }
+      .reward-trigger { width: 54px; height: 54px; }
+      .reward-trigger::before {
+        border-top-width: 22px;
+        border-bottom-width: 22px;
+        border-left-width: 34px;
+      }
+
+      .decision-slide .slide-inner { padding-top: 54px; padding-bottom: 24px; }
+      .decision-slide h2 { font-size: clamp(3rem, 13.5vw, 4rem); }
+      .decision-layout { gap: .8rem; }
+      .decision-flow-only .decision-rule { gap: 14px; }
+      .decision-flow-only .decision-rule p { font-size: clamp(1.55rem, 7.4vw, 2rem); }
+      .decision-transition {
+        border-left-width: 34px;
+        border-right-width: 34px;
+        border-top-width: 23px;
+      }
+
+      .bad-gamification-slide h1 { font-size: clamp(2.2rem, 9.3vw, 3rem); }
+      .thought-bubble { width: 46vw; height: 126px; }
+      .thought-bubble-a { left: 3vw; top: 8vh; }
+      .thought-bubble-b { right: 3vw; top: 8vh; width: 48vw; }
+      .thought-bubble-c { bottom: 6vh; width: 64vw; }
+      .thought-bubble-face { padding: 14px 15px; }
+      .thought-bubble-back { font-size: .72rem; line-height: 1.18; }
+
+      .closing-slide h1 { max-width: 12ch; font-size: clamp(2.5rem, 11.2vw, 3.4rem); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -2040,7 +2243,7 @@
 
   <main class="deck" id="deck" aria-label="Presentation about gamification">
     <section class="slide title-slide" data-title="What is gamification?" aria-labelledby="slide-1-title">
-      <span class="slide-number">00 / 12</span>
+      <span class="slide-number">00 / 13</span>
       <div class="slide-inner">
         <h1 id="slide-1-title">What is <span>gamification?</span></h1>
       </div>
@@ -2051,7 +2254,7 @@
     </section>
 
     <section class="slide about-slide" data-title="About me" aria-labelledby="slide-2-title">
-      <span class="slide-number">01 / 12</span>
+      <span class="slide-number">01 / 13</span>
       <div class="slide-inner">
         <h1 id="slide-2-title">Who I am and <em>why</em> I’m here</h1>
       </div>
@@ -2059,7 +2262,7 @@
     </section>
 
     <section class="slide goals-slide" data-title="What gamification can do" aria-labelledby="slide-3-title">
-      <span class="slide-number">02 / 12</span>
+      <span class="slide-number">02 / 13</span>
       <div class="slide-inner">
         <p class="eyebrow">Product goal</p>
         <h2 id="slide-3-title">What gamification can do</h2>
@@ -2075,7 +2278,7 @@
     </section>
 
     <section class="slide word-cloud-slide" data-title="What can gamification encourage?" aria-labelledby="slide-cloud-title">
-      <span class="slide-number">03 / 12</span>
+      <span class="slide-number">03 / 13</span>
       <div class="slide-inner">
         <div class="word-cloud-heading">
           <p class="eyebrow">Desired behavior</p>
@@ -2089,7 +2292,7 @@
     </section>
 
     <section class="slide definition-slide" data-title="Definition" aria-labelledby="slide-4-title">
-      <span class="slide-number">04 / 12</span>
+      <span class="slide-number">04 / 13</span>
       <div class="slide-inner">
         <div class="definition-stack">
           <p class="definition-line" id="slide-4-title">Gamification is</p>
@@ -2100,34 +2303,15 @@
     </section>
 
     <section class="slide horizontal-stage" data-title="The game loop" aria-labelledby="slide-5-title">
-      <span class="slide-number">05 / 12</span>
+      <span class="slide-number">05 / 13</span>
       <div class="slide-inner slider-layout">
         <h2 id="slide-5-title">The game loop</h2>
         <div class="carousel-shell">
           <div class="horizontal-track" id="horizontalTrack">
             <article class="h-panel cycle-panel" aria-label="Game loop diagram">
               <div class="h-inner">
-                <div class="loop-diagram">
-                  <svg class="loop-arrows" viewBox="0 0 1000 460" aria-hidden="true">
-                    <defs>
-                      <marker id="loop-arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#62b7ff"></path>
-                      </marker>
-                      <marker id="loop-arrow-yellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffe66d"></path>
-                      </marker>
-                      <marker id="loop-arrow-pink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#ff4fd8"></path>
-                      </marker>
-                    </defs>
-                    <path d="M 610 72 C 760 90 842 178 822 292" stroke="#62b7ff" marker-end="url(#loop-arrow-blue)"></path>
-                    <path d="M 730 378 C 595 438 405 438 270 378" stroke="#ffe66d" marker-end="url(#loop-arrow-yellow)"></path>
-                    <path d="M 178 292 C 158 178 240 90 390 72" stroke="#ff4fd8" marker-end="url(#loop-arrow-pink)"></path>
-                  </svg>
-                  <div class="loop-node loop-node-1"><span class="loop-step">1</span><b>Promise of a reward</b><small>A reason to want to act</small></div>
-                  <div class="loop-node loop-node-2"><span class="loop-step">2</span><b>Desired Action</b><small>What the product wants</small></div>
-                  <div class="loop-node loop-node-3"><span class="loop-step">3</span><b>Receiving the reward</b><small>Value created by the system’s rules</small></div>
-                  <div class="loop-center"><b>Loop</b></div>
+                <div class="loop-image-wrap">
+                  <img src="assets/game-loop-generated.png" alt="Three-step game loop: promise of a reward, desired action, and receiving the reward">
                 </div>
               </div>
             </article>
@@ -2188,11 +2372,24 @@
       <div class="examples-sources">Duolingo image: <a href="https://blog.duolingo.com/duolingo-leagues-leaderboards/">Duolingo</a></div>
     </section>
 
-    <section class="slide content-slide achievements-slide" data-title="Achievements" aria-labelledby="slide-6-title">
-      <span class="slide-number">06 / 12</span>
+    <section class="slide content-slide loop-system-slide" data-title="Gamification puts the loop into motion" aria-labelledby="slide-6-title">
+      <span class="slide-number">06 / 13</span>
+      <div class="slide-inner">
+        <h2 id="slide-6-title">Gamification puts the loop into motion</h2>
+        <div class="loop-system-layout">
+          <div class="loop-system-visual">
+            <img src="assets/game-loop-generated.png" alt="Three-step game loop: promise of a reward, desired action, and receiving the reward">
+          </div>
+          <p class="loop-system-copy">It is a game system that can <em>guide users through the loop</em> — and give them a reason to go around again.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide content-slide achievements-slide" data-title="Achievements" aria-labelledby="slide-7-title">
+      <span class="slide-number">07 / 13</span>
       <div class="slide-inner">
         <p class="eyebrow">Examples of game mechanics</p>
-        <h2 id="slide-6-title">Achievements</h2>
+        <h2 id="slide-7-title">Achievements</h2>
         <div class="mechanic-layout">
           <div class="mechanic-lead" style="--accent: var(--mint)">
             <p>Users take an action and get a visible marker: “I did this.”</p>
@@ -2229,11 +2426,11 @@
       </div>
     </section>
 
-    <section class="slide content-slide quest-slide" data-title="Quests" aria-labelledby="slide-7-title">
-      <span class="slide-number">07 / 12</span>
+    <section class="slide content-slide quest-slide" data-title="Quests" aria-labelledby="slide-8-title">
+      <span class="slide-number">08 / 13</span>
       <div class="slide-inner">
         <p class="eyebrow">Examples of game mechanics</p>
-        <h2 id="slide-7-title">Quests</h2>
+        <h2 id="slide-8-title">Quests</h2>
         <div class="mechanic-layout">
           <div class="mechanic-lead">
             <strong>Guide users to the next step</strong>
@@ -2261,11 +2458,11 @@
       </div>
     </section>
 
-    <section class="slide content-slide levels-slide" data-title="Progress and levels" aria-labelledby="slide-8-title">
-      <span class="slide-number">08 / 12</span>
+    <section class="slide content-slide levels-slide" data-title="Progress and levels" aria-labelledby="slide-9-title">
+      <span class="slide-number">09 / 13</span>
       <div class="slide-inner">
         <p class="eyebrow">Examples of game mechanics</p>
-        <h2 id="slide-8-title">Progress and levels</h2>
+        <h2 id="slide-9-title">Progress and levels</h2>
         <div class="level-map">
           <div class="level-stack" aria-label="Progress from level one to level five">
             <span style="--height: 24%">1</span>
@@ -2284,10 +2481,10 @@
       </div>
     </section>
 
-    <section class="slide content-slide rewards-slide" data-title="Rewards" aria-labelledby="slide-9-title">
-      <span class="slide-number">09 / 12</span>
+    <section class="slide content-slide rewards-slide" data-title="Rewards" aria-labelledby="slide-10-title">
+      <span class="slide-number">10 / 13</span>
       <div class="slide-inner">
-        <h2 id="slide-9-title">Rewards</h2>
+        <h2 id="slide-10-title">Rewards</h2>
         <div class="reward-stage" id="rewardStage">
           <div class="reward-slot">
             <button class="reward-trigger" type="button" aria-label="Show reward: status"></button>
@@ -2306,21 +2503,21 @@
             </article>
           </div>
           <div class="reward-slot">
-            <button class="reward-trigger" type="button" aria-label="Show reward: real-world value"></button>
+            <button class="reward-trigger" type="button" aria-label="Show reward: experience or intrinsic value"></button>
             <article class="reward-group" style="--group-accent: var(--pink)">
-              <small>Beyond the system</small>
-              <h3>Real-world value</h3>
-              <p>A discount, extra subscription time, or a physical item worth keeping.</p>
+              <small>Meaningful in itself</small>
+              <h3>Experience / Intrinsic value</h3>
+              <p>Unlocking secret information, taking on an extra challenge, or feeling: “I can do this.”</p>
             </article>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="slide title-slide bad-gamification-slide" data-title="It is very easy to create bad gamification" aria-labelledby="slide-10-title">
-      <span class="slide-number">10 / 12</span>
+    <section class="slide title-slide bad-gamification-slide" data-title="It is very easy to create bad gamification" aria-labelledby="slide-11-title">
+      <span class="slide-number">11 / 13</span>
       <div class="slide-inner">
-        <h1 id="slide-10-title">It is very easy to create <span>bad gamification.</span></h1>
+        <h1 id="slide-11-title">It is very easy to create <span>bad gamification.</span></h1>
       </div>
       <button class="thought-bubble thought-bubble-a" type="button" aria-pressed="false" aria-label="Reveal thought: an empty leaderboard">
         <span class="thought-bubble-card">
@@ -2345,10 +2542,10 @@
       <i class="pinball-dot bad-dot-b" aria-hidden="true"></i>
     </section>
 
-    <section class="slide content-slide decision-slide" data-title="Does your product need gamification?" aria-labelledby="slide-11-title">
-      <span class="slide-number">11 / 12</span>
+    <section class="slide content-slide decision-slide" data-title="Does your product need gamification?" aria-labelledby="slide-12-title">
+      <span class="slide-number">12 / 13</span>
       <div class="slide-inner">
-        <h2 id="slide-11-title">Does your product need <span>gamification?</span></h2>
+        <h2 id="slide-12-title">Does your product need <span>gamification?</span></h2>
         <div class="decision-layout decision-flow-only">
           <div class="decision-rule">
             <p>Your product has a <em>problem</em></p>
@@ -2363,10 +2560,10 @@
       <i class="pinball-dot decision-dot-b" aria-hidden="true"></i>
     </section>
 
-    <section class="slide title-slide closing-slide" data-title="Don’t be afraid to look silly" aria-labelledby="slide-12-title">
-      <span class="slide-number">12 / 12</span>
+    <section class="slide title-slide closing-slide" data-title="Don’t be afraid to look silly" aria-labelledby="slide-13-title">
+      <span class="slide-number">13 / 13</span>
       <div class="slide-inner">
-        <h1 id="slide-12-title">Don’t be afraid to look <span>silly</span></h1>
+        <h1 id="slide-13-title">Don’t be afraid to look <span>silly</span></h1>
       </div>
       <div class="tetromino closing-tetromino" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <i class="pinball-dot closing-dot-a" aria-hidden="true"></i>
@@ -2458,6 +2655,7 @@
     let realtimeChannel = null;
     let realtimeConnected = false;
     let lastPointerPulseAt = 0;
+    let pointerPulseGesture = null;
     let presenterToken = '';
     let liveReady = false;
     let applyingRemoteState = false;
@@ -2519,18 +2717,16 @@
       window.setTimeout(removePulse, 1100);
     };
 
-    const publishPointerPulse = event => {
+    const publishPointerPulse = point => {
       if (!liveEnabled || !liveReady || !realtimeConnected || !realtimeChannel) return;
-      if (event.pointerType === 'mouse' && event.button !== 0) return;
-      if (event.isPrimary === false) return;
 
       const now = window.performance?.now?.() ?? Date.now();
       if (now - lastPointerPulseAt < 280) return;
       lastPointerPulseAt = now;
 
       const payload = {
-        x: Math.max(0, Math.min(1, event.clientX / Math.max(1, window.innerWidth))),
-        y: Math.max(0, Math.min(1, event.clientY / Math.max(1, window.innerHeight))),
+        x: Math.max(0, Math.min(1, point.clientX / Math.max(1, window.innerWidth))),
+        y: Math.max(0, Math.min(1, point.clientY / Math.max(1, window.innerHeight))),
         slide_index: activeSlide,
         color: participantPulseColor
       };
@@ -2544,7 +2740,41 @@
         .catch(error => console.error('Pointer pulse could not be sent', error));
     };
 
-    document.addEventListener('pointerdown', publishPointerPulse, { passive: true });
+    document.addEventListener('pointerdown', event => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      if (event.isPrimary === false || pointerPulseGesture) return;
+      const dragSurface = event.target.closest?.('.behavior-cloud, .horizontal-track, .gallery-viewport');
+      pointerPulseGesture = {
+        pointerId: event.pointerId,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        startedAt: window.performance?.now?.() ?? Date.now(),
+        movementLimit: dragSurface ? 3 : 10,
+        moved: false
+      };
+    }, { passive: true, capture: true });
+
+    document.addEventListener('pointermove', event => {
+      if (!pointerPulseGesture || event.pointerId !== pointerPulseGesture.pointerId) return;
+      const distance = Math.hypot(
+        event.clientX - pointerPulseGesture.clientX,
+        event.clientY - pointerPulseGesture.clientY
+      );
+      if (distance > pointerPulseGesture.movementLimit) pointerPulseGesture.moved = true;
+    }, { passive: true, capture: true });
+
+    document.addEventListener('pointerup', event => {
+      if (!pointerPulseGesture || event.pointerId !== pointerPulseGesture.pointerId) return;
+      const gesture = pointerPulseGesture;
+      pointerPulseGesture = null;
+      const endedAt = window.performance?.now?.() ?? Date.now();
+      if (gesture.moved || endedAt - gesture.startedAt > 850) return;
+      publishPointerPulse({ clientX: event.clientX, clientY: event.clientY });
+    }, { passive: true, capture: true });
+
+    document.addEventListener('pointercancel', event => {
+      if (pointerPulseGesture?.pointerId === event.pointerId) pointerPulseGesture = null;
+    }, { passive: true, capture: true });
 
     const apiRequest = async (action, payload = {}) => {
       const response = await fetch(`${liveConfig.supabaseUrl}/functions/v1/presentation-api`, {
@@ -2788,8 +3018,9 @@
       const height = behaviorCloud.clientHeight;
       if (!width || !height) return;
 
-      const spreadX = Math.min(width * .43, 480);
-      const spreadY = Math.min(height * .41, 245);
+      const compactCloud = window.matchMedia('(max-width: 640px)').matches;
+      const spreadX = Math.min(width * (compactCloud ? .22 : .43), compactCloud ? 92 : 480);
+      const spreadY = Math.min(height * (compactCloud ? .38 : .41), compactCloud ? 185 : 245);
       const sinY = Math.sin(cloudRotationY);
       const cosY = Math.cos(cloudRotationY);
       const sinX = Math.sin(cloudRotationX);
@@ -2881,7 +3112,9 @@
     const renderBehaviors = count => {
       const previousIndex = behaviorIndex;
       const nextIndex = Math.max(0, Math.min(behaviors.length, Number(count) || 0));
-      const displayLimit = window.innerWidth < 640 ? 10 : 18;
+      const displayLimit = window.innerWidth <= 640
+        ? (window.innerHeight <= 700 ? 5 : 8)
+        : 18;
       const firstVisible = Math.max(0, nextIndex - displayLimit);
       const visibleIndexes = new Set(
         Array.from({ length: nextIndex - firstVisible }, (_, offset) => firstVisible + offset)

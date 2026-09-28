@@ -99,7 +99,7 @@ Deno.serve(async (request) => {
     const requested = (body.state ?? {}) as Record<string, unknown>;
     const state: Record<string, number | string> = { updated_at: new Date().toISOString() };
     const fields: Array<[string, number, number]> = [
-      ["current_slide", 0, 12],
+      ["current_slide", 0, 13],
       ["horizontal_index", 0, 3],
       ["reward_reveal", 0, 3],
       ["achievement_gallery_index", 0, 3],
