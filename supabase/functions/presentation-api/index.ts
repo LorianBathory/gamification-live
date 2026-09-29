@@ -128,6 +128,7 @@ Deno.serve(async (request) => {
       ["reward_reveal", 0, 3],
       ["achievement_gallery_index", 0, 3],
       ["quest_gallery_index", 0, 2],
+      ["example_count", 0, 42],
     ];
     for (const [field, min, max] of fields) {
       if (requested[field] !== undefined) {
